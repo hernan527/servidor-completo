@@ -2,15 +2,15 @@ FROM node:20.9.0-alpine
 
 WORKDIR /usr/meanserver
 
-# Activa pnpm (mejor que instalar con npm)
+# Install pnpm globally
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Instala dependencias
+# Copy package.json and pnpm-lock.yaml (DO NOT COPY OTHER FILES YET)
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
 
-ENV PNPM_HOME=/usr/local/pnpm-global
-ENV PATH=$PNPM_HOME:$PATH
+# Install project dependencies
+RUN pnpm install --frozen-lockfile
+
 
 # Instala pm2 globalmente (usando pnpm)
 RUN pnpm install -g pm2
