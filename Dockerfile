@@ -9,6 +9,9 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 
+ENV PNPM_HOME=/usr/local/pnpm-global
+ENV PATH=$PNPM_HOME:$PATH
+
 # Instala pm2 globalmente (usando pnpm)
 RUN pnpm install -g pm2
 
