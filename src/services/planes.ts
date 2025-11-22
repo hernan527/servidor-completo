@@ -55,8 +55,11 @@ const createProduct = async (item: any) => {
     return responseCreate;
 };
 
-const getProducts = async () => {
+const getProducts = async (
+
+) => {
     const responseGet = await PlanesModel.find({});
+    console.log("responseGet  :",responseGet)
     return responseGet
 };
 

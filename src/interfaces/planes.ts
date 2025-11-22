@@ -1,47 +1,49 @@
-import { Imagen as MiImagen } from './interfaces';
 import * as mongodb from 'mongodb';
+import { Imagen, Attribute } from './interfaces';
+import { Clinicas } from './clinicas'; // Importamos la interfaz Clinicas completa
 
 export interface Planes {
-  price?: number; // o string? pero en schema usas Number → mejor number
-  precio?: number;
-  rating?: '1' | '2' | '3' | '4' | '5'; // o Number? ver abajo
-  copagos?: boolean; // en schema es Boolean → mejor boolean
-  category?: 'inferior' | 'intermedio' | 'superior';
-  tags?: string[];
-  hijosSolos?: boolean;
-  name?: string;
-  images?: string[];
-  attributes?: Attribute[]; // 👈 CORRECCIÓN AQUÍ
+    _id?: mongodb.ObjectId;
+    item_id?: string;
+    empresa?: string;
+    sigla?: string; 
 
-  Cirugia_Estetica: boolean;
-  Cobertura_Nacional: boolean;
-  Habitacion_Individual: boolean;
-  Ortodoncia_Adultos: boolean;
-  PMO_Solo_por_Aportes: boolean;
-  Sin_Copagos: boolean;
-  
-  raiting: number; 
-  valueSlide3: number;
-  valueSlide4: number;
-  aporteOS: number;
-  
-  imagenes?: MiImagen;
-  folletos?: string[];
-  beneficios?: string[];
-  clinicas?: string[];
-  
-  _id?: mongodb.ObjectId;
-  item_id?: string;
-  empresa?: string;
-  sigla?: string; 
-}
-// interfaces/attribute.ts
-export interface Attribute {
-  id: string | null;
-  name: string;
-  value_id: string | null;
-  value_name: string;
-  attribute_group_id: string | null;
-  attribute_group_name: string;
-  value_type: string | null;
+    // Datos principales
+    price: number; 
+    precio: number;
+    rating: number; 
+    category?: 'inferior' | 'intermedio' | 'superior';
+    tags?: string[];
+    name?: string;
+
+    // Atributos binarios (Booleanos)
+    Cirugia_Estetica: boolean;
+    Cobertura_Nacional: boolean;
+    Habitacion_Individual: boolean;
+    Ortodoncia_Adultos: boolean;
+    PMO_Solo_por_Aportes: boolean;
+    Sin_Copagos: boolean;
+    copagos: boolean;
+    hijosSolos: boolean;
+
+    // Campos numéricos adicionales
+    raiting: number; 
+    valueSlide3: number;
+    valueSlide4: number;
+    aporteOS: number;
+    
+    // Anidación de Sub-documentos (deben ser arrays si el Schema los trata como [Schema])
+    // images en el Schema es un array de ImageSchema
+    images: Imagen[];
+    
+    // attributes en el Schema es un array de Mixed (pero si usas Attribute, es mejor tiparlo)
+    attributes: Attribute[]; 
+
+    // clinicas en el Schema es un array de ClinicaSchema
+    clinicas: Clinicas[];
+
+    // Otros arrays de strings
+    folletos?: string[];
+    beneficios?: string[];
+    cartillas?: string[]; // Si el plan tuviera cartillas directamente (lo agrego por si acaso)
 }
