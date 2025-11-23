@@ -1,6 +1,15 @@
 import ClinicasModel from './../models/clinicas';
 import PlanesModel from "./../models/planes";
+import { Clinicas } from '../interfaces/clinicas';
+// Define el tipo de tu objeto de regiones para que TypeScript lo entienda mejor
+interface RegionesConst {
+    [key: string]: string; 
+}
 
+// Define el tipo de la salida (el objeto agrupado)
+interface ClinicasAgrupadas {
+    [region: string]: any[]; // O ClinicaTransformada[], si defines ese tipo
+}
 async function addClinicas() {
   try {
     const products = await PlanesModel.find({}); // Fetch plans from the database
@@ -37,9 +46,16 @@ async function addClinicas() {
 async function obtenerPlanesConClinicas() {
   const planesConClinicas = await addClinicas();
   return planesConClinicas;
+};
+
+async function getSelectedPlansData(productIds: string[]) {
+    // Usamos el array de IDs para obtener solo los documentos necesarios.
+    const planesFiltrados = await PlanesModel.find({
+        item_id: { $in: productIds } 
+    }).lean(); 
+    
+    return planesFiltrados;
 }
-
-
 
 
 // Use the models as needed
@@ -99,4 +115,4 @@ const getPlanes = async () => {
 }; 
 export { createProduct, getProducts, getProduct, updateProduct, deleteProduct, searchProducts ,getPlanes};
 
-export { obtenerPlanesConClinicas };
+export { obtenerPlanesConClinicas, getSelectedPlansData };

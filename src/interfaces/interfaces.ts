@@ -9,8 +9,8 @@ export interface Imagen {
 }
  
 export interface Ubicacion {
-    calle_y_numero: string;
-    telefono?: string;
+    direccion: string;
+    telefono?: string; // Opcional
     barrio: string;
     partido: string;
     region: string;
@@ -19,11 +19,11 @@ export interface Ubicacion {
 }
 
 export interface CoberturaInterface {
-    _id?: mongodb.ObjectId;
+    _id?: string;
     key: string;
     label: string;
     children?: {
-        _id?: mongodb.ObjectId;
+        _id?: string;
         key: string;
         label: string;
         id?: string;
