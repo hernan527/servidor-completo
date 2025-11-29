@@ -1,10 +1,9 @@
-// compararclinicas.ts
-
 import { Response } from 'express';
 // ... otras importaciones
 import { RegionesConst } from './../interfaces/regiones'; // Asegúrate de tener este tipo o constante
 import { Clinicas, ClinicasAgrupadas } from './../interfaces/clinicas'; // Asegúrate de tener este tipo
-import { getSelectedPlansData } from './planes'; // La función para obtener productos de la BD
+// La función getSelectedPlansData no se usa directamente en el servicio, se asume que está en otro archivo.
+// import { getSelectedPlansData } from './planes'; 
 
 // =======================================================
 // FUNCIONES AUXILIARES (DEBEN SER MODIFICADAS PARA SER ASYNC O MANEJAR PROMISES)
@@ -14,16 +13,19 @@ import { getSelectedPlansData } from './planes'; // La función para obtener pro
  * Filtra las clínicas únicas de todos los productos.
  */
 function getUniqueClinicas(products: any[]): Clinicas[] {
+    console.log(`[Service: UniqueClinicas] Iniciando extracción de clínicas únicas de ${products.length} productos.`);
     const clinicasMap = new Map<string, Clinicas>();
 
-    products.forEach(product => {
-        product.clinicas.forEach((clinic: Clinicas) => {
+    products.forEach((product, productIndex) => {
+        product.clinicas.forEach((clinic: Clinicas, clinicIndex: number) => {
             if (!clinicasMap.has(clinic.item_id)) {
                 clinicasMap.set(clinic.item_id, clinic);
             }
         });
     });
 
+    const uniqueCount = clinicasMap.size;
+    console.log(`[Service: UniqueClinicas] Finalizado. Se encontraron ${uniqueCount} clínicas únicas.`);
     return Array.from(clinicasMap.values());
 }
 
@@ -33,6 +35,9 @@ function getUniqueClinicas(products: any[]): Clinicas[] {
  */
 function transformClinica(clinica: Clinicas, products: any[]): any {
     const obj: any = {};
+    
+    // Log de la clínica que se está transformando
+    console.log(`[Service: Transform] Transformando clínica ID: ${clinica.item_id}, Nombre: ${clinica.entity}`);
     
     // 1. Asigna las propiedades principales
     obj["nombre"] = clinica.entity;
@@ -45,6 +50,9 @@ function transformClinica(clinica: Clinicas, products: any[]): any {
         // Verifica si la cartilla de la clínica incluye el ID del producto
         obj[id] = clinica.cartillas.includes(id) ? "ok" : "no";
     });
+    
+    // Log del objeto transformado
+    console.log(`[Service: Transform] Objeto transformado para la grilla:`, obj);
 
     return obj;
 }
@@ -54,10 +62,8 @@ function transformClinica(clinica: Clinicas, products: any[]): any {
  * Agrupa las clínicas transformadas por región.
  */
 async function groupAndMapClinicas(clinicas: Clinicas[], products: any[], regiones: RegionesConst): Promise<ClinicasAgrupadas> {
+    console.log(`[Service: GroupMap] Iniciando agrupación de ${clinicas.length} clínicas.`);
     const regionesValidas: string[] = Object.values(regiones);
-    
-    // El problema con el 'reduce' asíncrono en TypeScript es complejo.
-    // Es mejor usar un Promise.all(map) o un bucle for/of simple para manejar la asincronía.
     
     const resultadoAgrupado: ClinicasAgrupadas = {};
 
@@ -67,31 +73,35 @@ async function groupAndMapClinicas(clinicas: Clinicas[], products: any[], region
         );
 
         if (regionEncontrada) { 
+            // Log de la región donde se agrupará
+            console.log(`[Service: GroupMap] Clínica ${clinica.item_id} asignada a la región: ${regionEncontrada}`);
+            
             // 🚨 IMPORTANTE: transformClinica es AHORA SÍNCRONA, por eso no lleva 'await'
             const transformedObj = transformClinica(clinica, products);
             
             resultadoAgrupado[regionEncontrada] = resultadoAgrupado[regionEncontrada] || [];
             resultadoAgrupado[regionEncontrada].push(transformedObj);
+        } else {
+            console.warn(`[Service: GroupMap] Clínica ${clinica.item_id} (${clinica.entity}) no pudo ser asignada a ninguna región válida.`);
         }
     }
     
+    console.log(`[Service: GroupMap] Finalizada la agrupación. Regiones agrupadas: ${Object.keys(resultadoAgrupado).length}`);
     return resultadoAgrupado;
 }
 
 
 // =======================================================
-// FUNCIÓN PRINCIPAL (groupClinics)
+// FUNCIÓN PRINCIPAL (groupClinicas)
 // =======================================================
 
 
 const groupClinicas = async (productsWithClinics: any[]): Promise<ClinicasAgrupadas> => {
+    console.log(`[Service] Iniciando función principal groupClinicas. Productos recibidos: ${productsWithClinics.length}`);
+    
     try {
-        // 🚨 ELIMINAR CÓDIGO INCORRECTO:
-        // const { products: productIds } = req.body; // Esto es del controlador
-        // if (!productIds || productIds.length === 0) { return {}; } // Esto es del controlador
-        // const productsWithClinics = await obtenerPlanesConClinicas(productIds); // Esto es del controlador
-        
         if (!productsWithClinics || productsWithClinics.length === 0) {
+            console.warn(`[Service] Array de productos vacío o nulo. Retornando objeto vacío.`);
             return {}; 
         }
              
@@ -105,9 +115,13 @@ const groupClinicas = async (productsWithClinics: any[]): Promise<ClinicasAgrupa
             productsWithClinics, 
             RegionesConst // Asume que RegionesConst es el objeto/array de regiones
         );
+
+        console.log(`[Service] groupClinicas finalizado. Estructura de resultado final:`, Object.keys(resultadoFinal));
         return resultadoFinal;
+        
     } catch (e) {
-        console.error(e);
+        const errorMessage = e instanceof Error ? e.message : 'Error desconocido en el servicio';
+        console.error(`[Service] ERROR en groupClinicas: ${errorMessage}`, e);
         throw new Error('ERROR_GROUP_CLINICA_SERVICE'); 
     }
 };
