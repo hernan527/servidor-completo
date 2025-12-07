@@ -14,8 +14,19 @@ export const createFile = async (req: Request, res: Response) => {
 
     let browser;
     try {
-        // Lanzar Puppeteer (puede requerir la opción 'args' si usas entornos serverless o Docker)
-        browser = await puppeteer.launch();
+        // Lanzar Puppeteer con argumentos ESENCIALES para entornos Linux/Docker
+        browser = await puppeteer.launch({
+            // 🛑 MODIFICACIÓN CLAVE: Argumentos para ejecución en Linux/Docker
+            args: [
+                '--no-sandbox',            // Obligatorio en la mayoría de los entornos Linux
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', // Resuelve problemas de memoria en contenedores Docker (Alpine)
+                '--disable-gpu',
+            ],
+            // Si usas puppeteer-core en Docker, podrías necesitar especificar la ruta al binario.
+            // Pero si la imagen base se arregla (ej: slim/debian), no debería ser necesario.
+        });
+        
         const page = await browser.newPage();
         
         // 2. ESTABLECER EL CONTENIDO HTML DIRECTAMENTE
@@ -35,7 +46,6 @@ export const createFile = async (req: Request, res: Response) => {
                 bottom: '20mm',
                 left: '10mm',
             }
-            // Puedes añadir headerTemplate y footerTemplate aquí si es necesario
         });
         
         // Cerrar el navegador

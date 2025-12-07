@@ -1,5 +1,26 @@
-FROM node:20.9.0-alpine
+FROM node:20.9.0-slim
 
+# Instalar dependencias de sistema necesarias para Chromium
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libcurl3-gnutls \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libxss1 \
+    libxtst6 \
+    xdg-utils \
+    # Dependencia clave para la memoria compartida
+    libgbm-dev \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+    
 WORKDIR /usr/meanserver
 
 
