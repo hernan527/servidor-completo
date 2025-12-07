@@ -17,7 +17,10 @@ export const createFile = async (req: Request, res: Response) => {
         // Lanzar Puppeteer con argumentos ESENCIALES para entornos Linux/Docker
         browser = await puppeteer.launch({
             // 🛑 MODIFICACIÓN CLAVE: Argumentos para ejecución en Linux/Docker
-           
+        // Prueba estas rutas. Comenta la que no uses. 
+    // Una de estas es la ubicación típica del binario en imágenes Debian 'slim'
+       executablePath: '/usr/bin/chromium', 
+    // executablePath: '/usr/bin/google-chrome',   
            
             args: [
                 '--no-sandbox',            // Obligatorio en la mayoría de los entornos Linux
