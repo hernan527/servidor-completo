@@ -21,13 +21,13 @@ export const createFile = async (req: Request, res: Response) => {
     // Una de estas es la ubicación típica del binario en imágenes Debian 'slim'
        executablePath: '/usr/bin/chromium', 
     // executablePath: '/usr/bin/google-chrome',   
-           
             args: [
                 '--no-sandbox',            // Obligatorio en la mayoría de los entornos Linux
                 '--disable-setuid-sandbox',
                 '--disable-dev-shm-usage', // Resuelve problemas de memoria en contenedores Docker (Alpine)
                 '--disable-gpu',
             ],
+            timeout: 60000, // <--- Aumentar el timeout global a 60 segundos
             // Si usas puppeteer-core en Docker, podrías necesitar especificar la ruta al binario.
             // Pero si la imagen base se arregla (ej: slim/debian), no debería ser necesario.
         });
@@ -37,7 +37,8 @@ export const createFile = async (req: Request, res: Response) => {
         // 2. ESTABLECER EL CONTENIDO HTML DIRECTAMENTE
         await page.setContent(htmlContent, {
             // Esperar a que los estilos e imágenes se carguen
-            waitUntil: 'networkidle0' 
+            waitUntil: 'domcontentloaded', // <-- CAMBIAR A UN MODO MENOS ESTRICTO
+            timeout: 60000, // <--- Aumentar el timeout aquí también
         }); 
 
         // 3. GENERAR EL PDF
