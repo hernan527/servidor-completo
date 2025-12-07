@@ -17,6 +17,8 @@ export const createFile = async (req: Request, res: Response) => {
         // Lanzar Puppeteer con argumentos ESENCIALES para entornos Linux/Docker
         browser = await puppeteer.launch({
             // 🛑 MODIFICACIÓN CLAVE: Argumentos para ejecución en Linux/Docker
+           
+           
             args: [
                 '--no-sandbox',            // Obligatorio en la mayoría de los entornos Linux
                 '--disable-setuid-sandbox',

@@ -2,6 +2,7 @@ FROM node:20.9.0-slim
 
 # Instalar dependencias de sistema necesarias para Chromium
 RUN apt-get update && apt-get install -y \
+    chromium \
     ca-certificates \
     fonts-liberation \
     libappindicator3-1 \
