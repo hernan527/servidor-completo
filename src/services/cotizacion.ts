@@ -16,7 +16,7 @@ export const  calcularPrecio = async (req: Request, res: Response) => {
  try{
 const formCotizar = req.body;
 const {group,empresa_prepaga,edad_1,edad_2,numkids,plan_type,tipo,agree,aporteOS,sueldo,aporte,monoadic,cantAport,afinidad,bonAfinidad,supras,segvida,segvida1,region,}=formCotizar;
-// console.log('formCotizar  : ');console.log(formCotizar)
+console.log('formCotizar  : ');console.log(formCotizar)
 const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: string) => {
   let edad1 = edad_1;
   let edad2 = edad_2;
@@ -502,11 +502,11 @@ let allPlanes = await PlanesModel.find({}); // Consulta a la base de datos para 
 // console.log(allPlanes)  
 const concatenarPrecios = valor_Omint.concat(valor_SanCor,valor_Premedic,valor_Galeno,valor_Swiss,valor_Doctored,valor_Prevencion);
 // console.log('concatenarPrecios: ')  
-console.log(concatenarPrecios)  
+// console.log(concatenarPrecios)  
 
   const combinedPlans = functions.combinePlansWithPrices(allPlanes, concatenarPrecios);
 // console.log('combinedPlans :')
-console.log(combinedPlans)
+// console.log(combinedPlans)
 
   for (const plan of combinedPlans) {
     const empresa = 'planes_' + plan.empresa;
@@ -557,7 +557,7 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        });
    
 // console.log('resultado   :');
-console.log(resultado);
+// console.log(resultado);
  res.status(200).json(resultado);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 
