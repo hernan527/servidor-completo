@@ -3,17 +3,18 @@ import { collections } from '../config/database';
 import { handleHttp } from "../utils/error.handle";
 
 import * as mongodb from "mongodb";
-import {  createProduct, getProducts, getProduct, updateProduct, deleteProduct, searchProducts ,getPlanes } from "../services/planes";
+import {  createEmpresa, getCompanies, getProduct, updateProduct, deleteProduct, searchProducts} from "../services/empresas.supabase";
 
 
 
 
 const  getItems = async (req: Request, res: Response) => {
+  // console.log('hola getItems EMPRESASs')
   try {
-    const  response = await getProducts();
+    const  response = await getCompanies();
     res.status(200).send(response);
   } catch (e) {
-    handleHttp(res,'ERROR_GET_CLINICAS')
+    handleHttp(res,'ERROR_GETEMPRESAS')
   }
 };
 
@@ -30,11 +31,11 @@ const  getItemById = async ({ params }:Request,res:Response) => {
 
 const  createItem = async (req: Request, res: Response) => {
   try {
-    const responseItem = await createProduct(req.body);
+    const responseItem = await createEmpresa(req.body);
         res.send(responseItem);
 
   } catch (e) {
-    handleHttp(res,'ERROR_CREATE_PLAN')
+    handleHttp(res,'ERROR_CREATE_EMPRESAS')
   }
 };
  
@@ -62,11 +63,6 @@ const  deleteItem = async ({ params }: Request, res: Response) => {
 const searchItem = async ({ params }: Request, res: Response) => {
   try {
     const { query, concept } = params;
-    // console.log("query")
-
-    // console.log(query)
-    // console.log("concept")
-    // console.log(concept)
 
 
     const response = await searchProducts(query);

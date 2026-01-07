@@ -1,11 +1,11 @@
 import { Router } from "express";
 import * as express from "express";
-import { getValores, getItems, getItemById, createItem, updateItem, deleteItem, searchItem  } from '../controllers/precios';
+import { getItems, getItemById, createItem, updateItem, deleteItem, searchItem  } from '../controllers/empresas.supabase';
 
 const router = Router();
 
 router.use(express.json());
-router.get('/',(req, res) => { getValores(req, res);});
+router.get('/',(req, res) => { getItems(req, res);});
 router.get('/:id', (req, res) => { getItemById(req, res);});
 router.post('/', (req, res) => {createItem(req, res) });
 router.put('/:id', (req, res) => { updateItem(req, res)});

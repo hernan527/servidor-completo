@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(express.json());
 router.post('/',getPrecios);
-  
+
   
 export { router }
 

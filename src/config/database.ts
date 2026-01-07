@@ -8,7 +8,17 @@ import { Clinicas } from "../interfaces/clinicas";
 import { Precios } from "../interfaces/precios";
 import { Posts } from "../interfaces/posts";
 import { Cotizaciones } from "../interfaces/cotizaciones";
+import { createClient } from '@supabase/supabase-js';
 
+// Asegúrate de tener estas variables en tu archivo .env
+const supabaseUrl = process.env.SUPABASE_URL as string;
+const supabaseKey = process.env.SUPABASE_KEY as string;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.warn("⚠️ Supabase: Faltan credenciales en el archivo .env");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const collections: {
     employees?: mongodb.Collection<Employee>,

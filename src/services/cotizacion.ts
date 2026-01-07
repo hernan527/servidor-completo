@@ -15,12 +15,20 @@ import { Precios } from '../interfaces/precios';
 export const  calcularPrecio = async (req: Request, res: Response) => {
  try{
 const formCotizar = req.body;
-const {group,empresa_prepaga,edad_1,edad_2,numkids,plan_type,tipo,agree,aporteOS,sueldo,aporte,monoadic,cantAport,afinidad,bonAfinidad,supras,segvida,segvida1,region,}=formCotizar;
-console.log('formCotizar  : ');console.log(formCotizar)
+const {group,empresa_prepaga,edad_1,edad_2,numkids,plan_type,tipo,agree,aporteOS,sueldo,aporte,monoadic,cantAport,afinidad,bonAfinidad,supras,segvida,segvida1,region}=formCotizar;
+// console.log('formCotizar  : ');console.log(formCotizar);
+
 const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: string) => {
+// console.log('calcularGrupocorriendo' )
   let edad1 = edad_1;
+  // console.log('calcularGrupocorriendo edad1',edad1 )
+
   let edad2 = edad_2;
+    // console.log('calcularGrupocorriendo edad2',edad2 )
+
   let num_kids = numkids;
+      // console.log('calcularGrupocorriendo num_kids',num_kids )
+
   if (group === '1' ) {
     edad2 = 0;
     num_kids = 0;
@@ -35,35 +43,59 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
   // // } else if (numkids === null) {
   // //   num_kids = 0;
   // }
+        // console.log('calcularGrupocorriendo edad1',edad1 )
+        // console.log('calcularGrupocorriendo edad2',edad2 )
+        // console.log('calcularGrupocorriendo num_kids',num_kids )
+        // console.log('calcularGrupocorriendo group',group )
+
   let grupo = functions.grupoFamiliar(edad1, edad2, num_kids, group);
+          // console.log('calcularGrupocorriendo grupo',grupo )
+
   return grupo;
 };
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-
+// console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
+  // console.log('beneficiariosF184 ', beneficiariosF184)
+
   const eleccionSueldoOAporte = aporteOS;
+    // console.log('eleccionSueldoOAporte ', eleccionSueldoOAporte)
+
   const sueldoSueldoOAporte = sueldo;
+    // console.log('sueldoSueldoOAporte ', sueldoSueldoOAporte)
   const categoria_Mono = "";
+    // console.log('categoria_Mono ', categoria_Mono)
 
     let numhijo2 = grupo[2]; //checked
+    // console.log('numhijo2 ', numhijo2)
+
     let numHijos = grupo[3]; //checked
+    // console.log('numHijos ', numHijos)
+
     let gen = grupo[4]; //checked
+    // console.log('gen ', gen)
+
     let grupoFam = grupo[5];
+    // console.log('grupoFam ', grupoFam)
 
     let tipo_IngresoPDMI = functions.tipoAsociado(tipo);
-
+// console.log('tipo_IngresoPDMI :',tipo_IngresoPDMI)
 // <! ----------SANCOR---------------------------------------------------->
 let idSancor = functions.productID(edad_1, tipo, gen, 'titular', numHijos,group);
+// console.log('idSancor :',idSancor)
+
 let idSancor1 = functions.productID(edad_2, tipo, gen, 'conyuge', numHijos,group);
+// console.log('idSancor1 :',idSancor1)
+
 let idSancorConyuge: string
 if (grupo[0] == 2) {
   idSancorConyuge = idSancor1[1];
 // console.log(idSancorConyuge)
 }else {idSancorConyuge
   =idSancor[0]}
-// console.log(idSancorConyuge)
+// console.log('idSancorConyuge ',idSancorConyuge)
 // <! -----------------------------OMINT---------------------------------------------------->
 let idOmint =  functions.productIdOmint(edad_1, tipo, 'titular',group);
 // <! -----------------------------GALENO--------------------------------------------------->
@@ -186,12 +218,12 @@ async function fetchPrices() {
 
 
   const promises = productQueries.map(async (query) => {
-      console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
+      // console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
       try {
           const result = await fetchProductPrice(query.id);
           return { [query.variable]: result };
       } catch (error) {
-          console.error(`Error fetching price for ${query.id}:`, error);
+          // console.error(`Error fetching price for ${query.id}:`, error);
           return { [query.variable]: null };
       }
   });
@@ -224,13 +256,13 @@ async function buscarPrecio(id: string) {
         const doc = await PreciosModel.findOne({ id });
 
         if (!doc) {
-            console.log(`⚠️ No se encontró el documento con id: ${id}`);
+            // console.log(`⚠️ No se encontró el documento con id: ${id}`);
             return { precios: 0 }; // Valor por defecto
         }
 
         return doc;
     } catch (error) {
-        console.error(`❌ Error al buscar precios con id ${id}:`, error);
+        // console.error(`❌ Error al buscar precios con id ${id}:`, error);
         return { precios: 0 };     // Valor por defecto para evitar que falle
     }
 }
@@ -347,7 +379,7 @@ await cargarPrecios(listaDePrecios, precios);
 
 // <! -----------------------------ID PREMEDIC START---------------------------------------------------->
 function hayPreciosValidos(precios: any[]): boolean {
-  console.log("Verificando precios:", precios); // Para depuración
+  // console.log("Verificando precios:", precios); // Para depuración
   
   // Verificamos que los precios no sean null ni undefined
   return precios.every(p => p !== null && p !== undefined);
@@ -374,7 +406,7 @@ if(hayPreciosValidos([prices.precio_titular_Omint.precios,
 // console.log('argsOmint :',argsOmint);
     valor_Omint = functions.valor_Omint(...argsOmint);
 // console.log('valor_Omint ',valor_Omint);
-}else{ console.log("no hay precios validos")
+}else{ // console.log("no hay precios validos")
 }
 
 if (hayPreciosValidos([
@@ -485,7 +517,7 @@ const argsPrevencion = [aporte_OS,buscar_mi_coeficiente('Prevencion'),grupo[3],p
 
 
 for ( let i=0 ; i < prices.length ; i++){
-console.log(prices[i])
+// console.log(prices[i])
 }
 
 let empresas: string[] = [];
@@ -558,7 +590,7 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
    
 // console.log('resultado   :');
 // console.log(resultado);
- res.status(200).json(resultado);
+ res.status(200).json(concatenarPrecios);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 
       }
