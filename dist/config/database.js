@@ -33,9 +33,17 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.collections = void 0;
+exports.collections = exports.supabase = void 0;
 require("dotenv/config");
 const mongodb = __importStar(require("mongodb"));
+const supabase_js_1 = require("@supabase/supabase-js");
+// Asegúrate de tener estas variables en tu archivo .env
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+if (!supabaseUrl || !supabaseKey) {
+    console.warn("⚠️ Supabase: Faltan credenciales en el archivo .env");
+}
+exports.supabase = (0, supabase_js_1.createClient)(supabaseUrl, supabaseKey);
 exports.collections = {};
 async function dbConnect() {
     const DB_URI = process.env.DB_URI;

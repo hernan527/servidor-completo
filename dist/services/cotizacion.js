@@ -46,12 +46,16 @@ const empresas_1 = __importDefault(require("./../models/empresas"));
 const calcularPrecio = async (req, res) => {
     try {
         const formCotizar = req.body;
-        const { group, empresa_prepaga, edad_1, edad_2, numkids, plan_type, tipo, agree, aporteOS, sueldo, aporte, monoadic, cantAport, afinidad, bonAfinidad, supras, segvida, segvida1, region, } = formCotizar;
-        // console.log('formCotizar  : ');console.log(formCotizar)
+        const { group, empresa_prepaga, edad_1, edad_2, numkids, plan_type, tipo, agree, aporteOS, sueldo, aporte, monoadic, cantAport, afinidad, bonAfinidad, supras, segvida, segvida1, region } = formCotizar;
+        // console.log('formCotizar  : ');console.log(formCotizar);
         const calcularGrupo = (edad_1, edad_2, numkids, group) => {
+            // console.log('calcularGrupocorriendo' )
             let edad1 = edad_1;
+            // console.log('calcularGrupocorriendo edad1',edad1 )
             let edad2 = edad_2;
+            // console.log('calcularGrupocorriendo edad2',edad2 )
             let num_kids = numkids;
+            // console.log('calcularGrupocorriendo num_kids',num_kids )
             if (group === '1') {
                 edad2 = 0;
                 num_kids = 0;
@@ -68,24 +72,41 @@ const calcularPrecio = async (req, res) => {
             // // } else if (numkids === null) {
             // //   num_kids = 0;
             // }
+            // console.log('calcularGrupocorriendo edad1',edad1 )
+            // console.log('calcularGrupocorriendo edad2',edad2 )
+            // console.log('calcularGrupocorriendo num_kids',num_kids )
+            // console.log('calcularGrupocorriendo group',group )
             let grupo = functions.grupoFamiliar(edad1, edad2, num_kids, group);
+            // console.log('calcularGrupocorriendo grupo',grupo )
             return grupo;
         };
         // Llamada a la función para obtener el grupo
         const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
+        // console.log('grupo ', grupo)
         const porcentaje = {};
         const beneficiariosF184 = cantAport;
+        // console.log('beneficiariosF184 ', beneficiariosF184)
         const eleccionSueldoOAporte = aporteOS;
+        // console.log('eleccionSueldoOAporte ', eleccionSueldoOAporte)
         const sueldoSueldoOAporte = sueldo;
+        // console.log('sueldoSueldoOAporte ', sueldoSueldoOAporte)
         const categoria_Mono = "";
+        // console.log('categoria_Mono ', categoria_Mono)
         let numhijo2 = grupo[2]; //checked
+        // console.log('numhijo2 ', numhijo2)
         let numHijos = grupo[3]; //checked
+        // console.log('numHijos ', numHijos)
         let gen = grupo[4]; //checked
+        // console.log('gen ', gen)
         let grupoFam = grupo[5];
+        // console.log('grupoFam ', grupoFam)
         let tipo_IngresoPDMI = functions.tipoAsociado(tipo);
+        // console.log('tipo_IngresoPDMI :',tipo_IngresoPDMI)
         // <! ----------SANCOR---------------------------------------------------->
         let idSancor = functions.productID(edad_1, tipo, gen, 'titular', numHijos, group);
+        // console.log('idSancor :',idSancor)
         let idSancor1 = functions.productID(edad_2, tipo, gen, 'conyuge', numHijos, group);
+        // console.log('idSancor1 :',idSancor1)
         let idSancorConyuge;
         if (grupo[0] == 2) {
             idSancorConyuge = idSancor1[1];
@@ -95,7 +116,7 @@ const calcularPrecio = async (req, res) => {
             idSancorConyuge
                 = idSancor[0];
         }
-        // console.log(idSancorConyuge)
+        // console.log('idSancorConyuge ',idSancorConyuge)
         // <! -----------------------------OMINT---------------------------------------------------->
         let idOmint = functions.productIdOmint(edad_1, tipo, 'titular', group);
         // <! -----------------------------GALENO--------------------------------------------------->
@@ -108,21 +129,21 @@ const calcularPrecio = async (req, res) => {
         // <! ----------MEDIFE---------------------------------------------------->
         let idAdultosMedife = functions.productIdMedife(edad_1, edad_1, tipo_IngresoPDMI);
         // <! ----------PREVENCION---------------------------------------------------->
-        let idPrevencion = functions.productIdPrevencion(edad_1, edad_1, numkids, tipo_IngresoPDMI);
+        let idPrevencion = functions.productIdPrevencion(edad_1, edad_1, grupo[3], tipo_IngresoPDMI);
         // <! ----------DOCTORED---------------------------------------------------->
-        let IdDoctored = functions.productIdDoctored(edad_1, edad_2, tipo_IngresoPDMI, numkids, group);
+        let IdDoctored = functions.productIdDoctored(edad_1, edad_2, tipo_IngresoPDMI, grupo[3], group);
         // <! ----------AVALIAN---------------------------------------------------->
         let IdsAvalian = functions.productIdAvalian(edad_1, edad_2, tipo_IngresoPDMI, group);
         // <! ----------CRISTAL y RAS---------------------------------------------------->
         let idsCristalyRas = functions.productIdRasCristal(edad_1, edad_2, tipo_IngresoPDMI, group);
         // <! ----------LUIS PASTEUR---------------------------------------------------->
-        let idsLuisPasteur = functions.productIdLuisPasteur(edad_1, edad_2, numkids, tipo_IngresoPDMI, group);
+        let idsLuisPasteur = functions.productIdLuisPasteur(edad_1, edad_2, grupo[3], tipo_IngresoPDMI, group);
         // <! ----------ASMEPRIV---------------------------------------------------->
-        let idsAsmepriv = functions.productIdAsmepriv(edad_1, edad_2, numkids, tipo_IngresoPDMI, group);
+        let idsAsmepriv = functions.productIdAsmepriv(edad_1, edad_2, grupo[3], tipo_IngresoPDMI, group);
         // <! ----------BAYRES PLAN---------------------------------------------------->
         let idsBayresPlan = functions.productIBayres(edad_1, edad_2, group);
         // <! ----------HOMINIS---------------------------------------------------->
-        let idsHominis = functions.productIdHominis(edad_1, edad_2, tipo_IngresoPDMI, numkids, group);
+        let idsHominis = functions.productIdHominis(edad_1, edad_2, tipo_IngresoPDMI, grupo[3], group);
         async function fetchProductPrice(id) {
             // console.log( ' funcion en linea 183 : id: ', id)
             return await (0, precios_2.getProduct)(id);
@@ -143,7 +164,7 @@ const calcularPrecio = async (req, res) => {
                 return coeficiente;
             }
             else {
-                // console.log(`No se encontró la empresa ${type}.`);
+                console.log(`No se encontró la empresa ${type}.`);
             }
         }
         async function fetchPrices() {
@@ -206,13 +227,13 @@ const calcularPrecio = async (req, res) => {
                 { variable: 'precioHominis', id: idsHominis }
             ];
             const promises = productQueries.map(async (query) => {
-                console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
+                // console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
                 try {
                     const result = await fetchProductPrice(query.id);
                     return { [query.variable]: result };
                 }
                 catch (error) {
-                    console.error(`Error fetching price for ${query.id}:`, error);
+                    // console.error(`Error fetching price for ${query.id}:`, error);
                     return { [query.variable]: null };
                 }
             });
@@ -239,13 +260,13 @@ const calcularPrecio = async (req, res) => {
             try {
                 const doc = await precios_1.default.findOne({ id });
                 if (!doc) {
-                    console.log(`⚠️ No se encontró el documento con id: ${id}`);
+                    // console.log(`⚠️ No se encontró el documento con id: ${id}`);
                     return { precios: 0 }; // Valor por defecto
                 }
                 return doc;
             }
             catch (error) {
-                console.error(`❌ Error al buscar precios con id ${id}:`, error);
+                // console.error(`❌ Error al buscar precios con id ${id}:`, error);
                 return { precios: 0 }; // Valor por defecto para evitar que falle
             }
         }
@@ -352,6 +373,7 @@ const calcularPrecio = async (req, res) => {
         let valor_Doctored = [];
         let valor_Prevencion = [];
         let valor_Avalian = [];
+        let valor_Medife = [];
         let valor_Ras = [];
         let valor_Cristal = [];
         let valor_Asmepriv = [];
@@ -362,12 +384,11 @@ const calcularPrecio = async (req, res) => {
             prices.precio_hijo1_Omint.precios,
             prices.precio_hijo2_Omint.precios])) {
             const argsOmint = [aporte_OS, edad_2, numHijos, numhijo2, prices.precio_titular_Omint.precios, prices.precio_conyuge_Omint.precios, prices.precio_hijo1_Omint.precios, prices.precio_hijo2_Omint.precios, idOmint[0], afinidad, bonAfinidad, buscar_mi_coeficiente('OMINT'), group];
-            // console.log('argsOmint :',argsOmint);
+            console.log('argsOmint :', argsOmint);
             valor_Omint = functions.valor_Omint(...argsOmint);
-            // console.log('valor_Omint ',valor_Omint);
+            console.log('valor_Omint ', valor_Omint);
         }
-        else {
-            console.log("no hay precios validos");
+        else { // console.log("no hay precios validos")
         }
         if (hayPreciosValidos([
             prices.priceAdultosPr.precios,
@@ -375,62 +396,88 @@ const calcularPrecio = async (req, res) => {
             prices.pricePrHijoMenir1.precios
         ])) {
             const argsPremedic = [aporte_OS, buscar_mi_coeficiente('Premedic'), grupo[3], prices.priceAdultosPr.precios, prices.pricePrHijoMenir25.precios, prices.pricePrHijoMenir1.precios, edadIdPremedic, afinidad, bonAfinidad, group];
-            // console.log('argsPremedic :',argsPremedic);
+            console.log('argsPremedic :', argsPremedic);
             valor_Premedic = functions.valor_Premedic(...argsPremedic);
-            // console.log('valor_Premedic',valor_Premedic);
+            console.log('valor_Premedic', valor_Premedic);
         }
         if (hayPreciosValidos([prices.precioSanCor1Hijo.precios,
             prices.precioSanCor2Hijo.precios,
             prices.precioSanCorTitular.precios,
             prices.precioConyugeSanCor.precios])) {
-            const argsSanCor = [aporte_OS, buscar_mi_coeficiente('SanCor Salud'), edad_1, edad_2, grupo[3], prices.precioSanCor1Hijo.precios, prices.precioSanCor2Hijo.precios, prices.precioSanCorTitular.precios, prices.precioConyugeSanCor.precios, numhijo2, grupoFam, segvida, segvida1, supras, afinidad, bonAfinidad, gen];
-            // console.log('argsSanCor :',argsSanCor);
+            // CORREGIDO: Se agregaron paréntesis y argumentos faltantes
+            const argsSanCor = [
+                aporte_OS,
+                await buscar_mi_coeficiente('SanCor Salud'),
+                edad_1,
+                edad_2,
+                grupo[3],
+                prices.precioSanCor1Hijo.precios,
+                prices.precioSanCor2Hijo.precios,
+                prices.precioSanCorTitular.precios,
+                prices.precioConyugeSanCor.precios,
+                numhijo2,
+                grupoFam,
+                afinidad,
+                bonAfinidad,
+                gen
+            ];
+            console.log('argsSanCor :', argsSanCor);
             valor_SanCor = functions.valor_SanCor(...argsSanCor);
-            // console.log('valor_SanCor',valor_SanCor);
+            console.log('valor_SanCor', valor_SanCor);
         }
         ;
-        // console.log('galeno' + idGaleno )
-        if (edad_1 <= 25 && edad_2 <= 25 && numkids > 2) { }
+        // ... dentro de calcularPrecio ...
+        // 1. Convertimos o aseguramos que numHijos sea un número para evitar el error TS2365
+        const numHijosNumerico = Number(grupo[3]);
+        // 2. Definimos la condición con el tipo correcto
+        const esGrupoJovenNumeroso = (edad_1 <= 25 && edad_2 <= 25 && numHijosNumerico > 2);
+        console.log(`--- Verificación Galeno ---`);
+        console.log(`Edad1: ${edad_1}, Edad2: ${edad_2}, Hijos: ${numHijosNumerico}`);
+        console.log(`¿Es grupo joven numeroso?: ${esGrupoJovenNumeroso}`);
+        if (esGrupoJovenNumeroso) {
+            console.log("Saliendo de Galeno: No aplica para grupos jóvenes con más de 2 hijos.");
+        }
         else {
-            if (hayPreciosValidos([prices.priceGrupoGaleno.precios])) {
-                // console.log('hola');
-                const argsGaleno = [aporte_OS, prices.priceGrupoGaleno.precios, buscar_mi_coeficiente('Galeno')];
-                // console.log('argsGaleno :',argsGaleno);
+            if (hayPreciosValidos([prices.priceGrupoGaleno?.precios])) {
+                const argsGaleno = [
+                    aporte_OS,
+                    prices.priceGrupoGaleno.precios,
+                    await buscar_mi_coeficiente('Galeno')
+                ];
                 valor_Galeno = functions.valor_Galeno(...argsGaleno);
-                // console.log('valor_Galeno',valor_Galeno);
+                console.log(`✅ Galeno calculado: ${valor_Galeno.length} planes`);
             }
             else {
-                // Si los precios son null o undefined, no hace nada y no se ejecuta el bloque
-                // console.log('Precios Galeno no válidos: no se ejecuta el bloque.');
+                console.log("⚠️ Galeno: No hay precios válidos en DB.");
             }
         }
         if (hayPreciosValidos([prices.precioTitularSwiss.precios,
             prices.precioConyugeSwiss.precios,
             prices.precioHijo1Swiss.precios,
             prices.precioHijo2Swiss.precios])) {
-            const argsSwiss = [aporte_OS, edad_2, numkids, numhijo2, prices.precioTitularSwiss.precios, prices.precioConyugeSwiss.precios, prices.precioHijo1Swiss.precios, prices.precioHijo2Swiss.precios, buscar_mi_coeficiente('Swiss Medical'), group];
-            // console.log('argsSwiss :',argsSwiss);
+            const argsSwiss = [aporte_OS, edad_2, grupo[3], numhijo2, prices.precioTitularSwiss.precios, prices.precioConyugeSwiss.precios, prices.precioHijo1Swiss.precios, prices.precioHijo2Swiss.precios, buscar_mi_coeficiente('Swiss Medical'), group];
+            console.log('argsSwiss :', argsSwiss);
             valor_Swiss = functions.valor_Swiss(...argsSwiss);
-            // console.log('valor_Swiss',valor_Swiss);
+            console.log('valor_Swiss', valor_Swiss);
         }
         if (hayPreciosValidos([prices.precioDoctoredGrupo.precios, prices.precioDoctoredHijo3.precios])) {
             const argsDoctored = [aporte_OS, buscar_mi_coeficiente('Doctored'), grupo[3], prices.precioDoctoredGrupo.precios, prices.precioDoctoredHijo3.precios, group];
-            // console.log('argsDoctored :',argsDoctored);
+            console.log('argsDoctored :', argsDoctored);
             valor_Doctored = functions.valor_Doctored(...argsDoctored);
-            // console.log('valor_Doctored',valor_Doctored);
+            console.log('valor_Doctored', valor_Doctored);
         }
         if (hayPreciosValidos([prices.precioPrevencion.precios])) {
             const argsPrevencion = [aporte_OS, buscar_mi_coeficiente('Prevencion'), grupo[3], prices.precioPrevencion.precios, group];
-            // console.log('argsPrevencion :',argsPrevencion);
+            console.log('argsPrevencion :', argsPrevencion);
             valor_Prevencion = functions.valor_Prevencion(...argsPrevencion);
-            // console.log('valor_Prevencion',valor_Prevencion);
+            console.log('valor_Prevencion', valor_Prevencion);
         }
-        // if (hayPreciosValidos([prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios])) {
-        // const argsAvalian = [aporte_OS,buscar_mi_coeficiente('Avalian'),group, bonAfinidad, prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios];
-        // console.log('argsAvalian :',argsAvalian);
-        //   valor_Avalian = functions.valor_Avalian(...argsAvalian);
-        // console.log('valor_Avalian ',valor_Avalian);
-        // }
+        if (hayPreciosValidos([prices.precioAvalianTitular.precios, prices.precioAvalianConyuge.precios, prices.precioAvalianHijo1.precios, prices.precioAvalianHijo2.precios, prices.precioAvalianHijo3.precios, prices.precioAvalianHijo25.precios])) {
+            const argsAvalian = [aporte_OS, buscar_mi_coeficiente('Avalian'), group, bonAfinidad, prices.precioAvalianTitular.precios, prices.precioAvalianConyuge.precios, prices.precioAvalianHijo1.precios, prices.precioAvalianHijo2.precios, prices.precioAvalianHijo3.precios, grupo[3]];
+            console.log('argsAvalian :', argsAvalian);
+            valor_Avalian = functions.valor_Avalian(...argsAvalian);
+            console.log('valor_Avalian ', valor_Avalian);
+        }
         // if (hayPreciosValidos([prices.precioTitularRas.precios, prices.precioConyugeRas.precios, prices.precioHijo1Ras.precios, prices.precioHijo2Ras.precios, prices.precioHijo3Ras.precios])) {
         // const argsRas = [aporte_OS,buscar_mi_coeficiente('Ras'), group, bonAfinidad, prices.precioTitularRas.precios, prices.precioConyugeRas.precios, prices.precioHijo1Ras.precios, prices.precioHijo2Ras.precios, prices.precioHijo3Ras.precios];
         // console.log('argsRas :',argsRas);
@@ -461,10 +508,14 @@ const calcularPrecio = async (req, res) => {
         //   valor_BayresPlan = functions.valor_Bayresplan(...argsBayresplan);
         // console.log('valor_BayresPlan ',valor_BayresPlan);
         // }
-        // const argsHominis = [aporte_OS,buscar_mi_coeficiente('Hominis'), group, bonAfinidad, prices.precioHominis.precios];
-        // console.log('argsHominis :',argsHominis);
+        if (hayPreciosValidos([prices.precioMedifeAdultos, prices.precioMedifeHijo0a1, prices.precioMedifeHijo0a20, prices.precioMedifeHijo0a25])) {
+            const argsMedife = [aporte_OS, buscar_mi_coeficiente('Medife'), grupo[3], prices.precioMedifeAdultos, prices.precioMedifeHijo0a20];
+            console.log('argsMedife :', argsMedife);
+            valor_Medife = functions.valor_Medife(...argsMedife);
+            console.log('valor_Medife ', argsMedife);
+        }
         for (let i = 0; i < prices.length; i++) {
-            console.log(prices[i]);
+            // console.log(prices[i])
         }
         let empresas = [];
         let planesPorEmpresa = {};
@@ -477,12 +528,12 @@ const calcularPrecio = async (req, res) => {
         let allPlanes = await planes_1.default.find({}); // Consulta a la base de datos para obtener los planes
         // console.log('allPlanes : ')  
         // console.log(allPlanes)  
-        const concatenarPrecios = valor_Omint.concat(valor_SanCor, valor_Premedic, valor_Galeno, valor_Swiss, valor_Doctored, valor_Prevencion);
+        const concatenarPrecios = valor_Omint.concat(valor_SanCor, valor_Premedic, valor_Galeno, valor_Swiss, valor_Doctored, valor_Prevencion, valor_Medife, valor_Avalian);
         // console.log('concatenarPrecios: ')  
-        console.log(concatenarPrecios);
+        // console.log(concatenarPrecios)  
         const combinedPlans = functions.combinePlansWithPrices(allPlanes, concatenarPrecios);
         // console.log('combinedPlans :')
-        console.log(combinedPlans);
+        // console.log(combinedPlans)
         for (const plan of combinedPlans) {
             const empresa = 'planes_' + plan.empresa;
             planesPorEmpresa[empresa] = planesPorEmpresa[empresa] || [];
@@ -522,8 +573,8 @@ const calcularPrecio = async (req, res) => {
             return true;
         });
         // console.log('resultado   :');
-        console.log(resultado);
-        res.status(200).json(resultado);
+        // console.log(resultado);
+        res.status(200).json(concatenarPrecios);
     }
     catch (e) {
         (0, error_handle_1.handleHttp)(res, 'ERROR_GET_ITEMS');

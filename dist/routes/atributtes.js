@@ -36,16 +36,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
 const express = __importStar(require("express"));
-const precios_1 = require("../controllers/precios");
+const atributtes_supabase_1 = require("../controllers/atributtes.supabase");
 const router = (0, express_1.Router)();
 exports.router = router;
 router.use(express.json());
-router.get('/', (req, res) => { (0, precios_1.getValores)(req, res); });
-router.get('/:id', (req, res) => { (0, precios_1.getItemById)(req, res); });
-router.post('/', (req, res) => { (0, precios_1.createItem)(req, res); });
-router.put('/:id', (req, res) => { (0, precios_1.updateItem)(req, res); });
-router.delete('/:id', (req, res) => { (0, precios_1.deleteItem)(req, res); });
+router.get('/', (req, res) => { (0, atributtes_supabase_1.getItems)(req, res); });
+router.get('/:id', (req, res) => { (0, atributtes_supabase_1.getItemById)(req, res); });
+router.post('/', (req, res) => { (0, atributtes_supabase_1.createItem)(req, res); });
+router.put('/:id', (req, res) => { (0, atributtes_supabase_1.updateItem)(req, res); });
+router.delete('/:id', (req, res) => { (0, atributtes_supabase_1.deleteItem)(req, res); });
 router.get('/search', (req, res) => {
-    (0, precios_1.searchItem)(req, res);
+    (0, atributtes_supabase_1.searchItem)(req, res);
 });
-//# sourceMappingURL=precios.js.map
+//# sourceMappingURL=atributtes.js.map

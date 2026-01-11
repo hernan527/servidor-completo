@@ -36,16 +36,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
 const express = __importStar(require("express"));
-const precios_1 = require("../controllers/precios");
+const planes_supabase_1 = require("../controllers/planes.supabase");
 const router = (0, express_1.Router)();
 exports.router = router;
 router.use(express.json());
-router.get('/', (req, res) => { (0, precios_1.getValores)(req, res); });
-router.get('/:id', (req, res) => { (0, precios_1.getItemById)(req, res); });
-router.post('/', (req, res) => { (0, precios_1.createItem)(req, res); });
-router.put('/:id', (req, res) => { (0, precios_1.updateItem)(req, res); });
-router.delete('/:id', (req, res) => { (0, precios_1.deleteItem)(req, res); });
-router.get('/search', (req, res) => {
-    (0, precios_1.searchItem)(req, res);
-});
-//# sourceMappingURL=precios.js.map
+// --- 1. RUTAS ESTÁTICAS (Van arriba de todo) ---
+router.get('/prestaciones-maestras', (req, res) => { (0, planes_supabase_1.getPrestaciones)(req, res); });
+router.get('/jerarquia-planes', (req, res) => { (0, planes_supabase_1.getJerarquia)(req, res); });
+router.get('/search', (req, res) => { (0, planes_supabase_1.searchItem)(req, res); }); // <-- SUBIDA AQUÍ
+// --- 2. RUTAS BASE ---
+router.get('/', (req, res) => { (0, planes_supabase_1.getItems)(req, res); });
+router.post('/', (req, res) => { (0, planes_supabase_1.createItem)(req, res); });
+// En tu router de Express
+router.post('/prestaciones-maestras', planes_supabase_1.createPrestacion);
+// --- 3. RUTAS CON PARÁMETROS (Van al final) ---
+router.get('/:id', (req, res) => { (0, planes_supabase_1.getItemById)(req, res); });
+router.put('/:id', (req, res) => { (0, planes_supabase_1.updateItem)(req, res); });
+router.delete('/:id', (req, res) => { (0, planes_supabase_1.deleteItem)(req, res); });
+// RUTA PARA LOS FOLLETOS
+router.put('/:id/prestaciones', (req, res) => { (0, planes_supabase_1.updatePrestacionesPlan)(req, res); });
+//# sourceMappingURL=plans.js.map

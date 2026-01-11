@@ -165,22 +165,20 @@ function planNombre(gen, plan_gen, plan_nombre) {
     ;
     return plan_nombre;
 }
-function suprasSalud(supras, gen, plan_nombre, otrosBenPrecios, grupoFam) {
+function suprasSalud(plan_nombre, otrosBenPrecios, grupoFam) {
     let otrosBen = 0;
-    if (supras === true && gen === '') {
-        otrosBen = 0;
-        if (plan_nombre.includes('B')) {
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSPRO'];
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSOD'];
-        }
-        else {
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSPRO'];
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSOD'];
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSAC'];
-            otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SUF'];
-        }
-        ;
+    otrosBen = 0;
+    if (plan_nombre.includes('B')) {
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSPRO'];
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSOD'];
     }
+    else {
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSPRO'];
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSOD'];
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSAC'];
+        otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SUF'];
+    }
+    ;
     return otrosBen;
 }
 //# sourceMappingURL=functions.js.map

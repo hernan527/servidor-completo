@@ -36,16 +36,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
 const express = __importStar(require("express"));
-const precios_1 = require("../controllers/precios");
+const comparar_1 = require("../controllers/comparar");
 const router = (0, express_1.Router)();
 exports.router = router;
 router.use(express.json());
-router.get('/', (req, res) => { (0, precios_1.getValores)(req, res); });
-router.get('/:id', (req, res) => { (0, precios_1.getItemById)(req, res); });
-router.post('/', (req, res) => { (0, precios_1.createItem)(req, res); });
-router.put('/:id', (req, res) => { (0, precios_1.updateItem)(req, res); });
-router.delete('/:id', (req, res) => { (0, precios_1.deleteItem)(req, res); });
-router.get('/search', (req, res) => {
-    (0, precios_1.searchItem)(req, res);
-});
-//# sourceMappingURL=precios.js.map
+// 🛑 CAMBIAR a POST para recibir el HTML en el body
+router.post('/', comparar_1.createFile);
+//# sourceMappingURL=comparar.js.map
