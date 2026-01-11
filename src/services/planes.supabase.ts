@@ -40,22 +40,29 @@ const getPlanesConTodo = async () => {
         *
       ), 
       plan_clinica (
-        *,
         clinicas (*)
+      ),
+      plan_prestacion ( 
+      prestacion_id,
+      valor,
+      listar,
+        prestaciones_maestras (
+          nombre,
+          icono_emoji
+        )
       )
     `)
-    // FILTRO 1: La empresa DEBE tener listar en true. 
-    // Gracias al !inner, si la empresa es false, el plan desaparece automáticamente.
     .eq('empresas.listar', true)
-    
-    // FILTRO 2: El plan individual también debe estar activo.
-    .eq('listar', true);
+    .eq('listar', true)
+    // Agregamos un orden para que los beneficios respeten el 'orden' que definimos
+    .order('orden', { foreignTable: 'plan_prestacion', ascending: true });
 
   if (error) {
-    console.error("Error en la consulta:", error.message);
+    console.error("❌ Error real de Supabase:", error.message);
     throw error;
   }
-  
+
+  console.log('✅ hola getItems plans2 - Data cargada correctamente');
   return data;
 };
 
@@ -69,22 +76,7 @@ const getProduct = async (id: string) => {
   return data;
 };
 
-// 1. UPDATE: Actualiza los datos y devuelve el objeto modificado
-const updateProduct = async (id: string, data: any) => {
-  // Limpiamos nulos si querés mantener la lógica que tenías en Mongo
-  const cleanData = { ...data };
-  Object.keys(cleanData).forEach(key => cleanData[key] === null && delete cleanData[key]);
 
-  const { data: responseUpdate, error } = await supabase
-    .from('planes')
-    .update(cleanData)
-    .eq('id', id)
-    .select() // Esto hace que devuelva el objeto actualizado (equivalente a {new: true})
-    .single();
-
-  if (error) throw error;
-  return responseUpdate;
-};
 
 // 2. DELETE: Borra por ID
 const deleteProduct = async (id: string) => {
@@ -109,6 +101,137 @@ const searchProducts = async (query: string) => {
   if (error) throw error;
   return responseSearch;
 };
-// ... updateProduct y deleteProduct siguen la misma lógica de supabase.from().update() / delete()
 
-export { createPlan, getPlanesConTodo, getProduct, updateProduct,deleteProduct, searchProducts };
+// controllers/planes.ts
+
+// Este es el que REALMENTE debe llamar el endpoint /prestaciones-maestras
+const getPrestacionesMaestras = async () => {
+  const { data, error } = await supabase
+    .from('prestaciones_maestras') // 🔥 APUNTAMOS A LA TABLA MAESTRA, NO A PLANES
+    .select('*')
+    .order('nombre', { ascending: true }); // Opcional: Ordenarlas por nombre
+
+  if (error) {
+    console.error("Error en Supabase:", error);
+    throw error;
+  }
+  return data; 
+};
+
+// Este es el que REALMENTE debe llamar el endpoint /prestaciones-maestrasconst createPrestacionMaestra = async (req: Request, res: Response) => {
+export const createPrestacionesMaestras = async (data: any) => {
+  const { nombre, icono, icono_emoji, categoria } = data;
+console.log('Service createPrestacionesMaestras')
+  const { data: result, error } = await supabase
+    .from('prestaciones_maestras')
+    .insert([{ 
+      nombre, 
+      icono_emoji: icono_emoji || '✅', 
+      categoria: categoria || 'Beneficios',
+      icono: icono || "Activity"
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return result;
+};
+
+const updatePrestacionesPlanService = async (planId: string, prestaciones: any[]) => {
+  try {
+    console.log(`--- 🛠️ INICIANDO TABLA INTERMEDIA PARA PLAN ID: ${planId} ---`);
+    
+    if (!prestaciones || prestaciones.length === 0) {
+      console.log("⚠️ No llegaron prestaciones para insertar.");
+      return;
+    }
+
+    // 1. Borrado (Logueamos cuántas filas borra)
+    const { count, error: delError } = await supabase
+      .from('plan_prestacion')
+      .delete()
+      .eq('plan_id', planId);
+
+    if (delError) throw delError;
+    console.log(`✅ Borrado previo exitoso.`);
+
+    // 2. Mapeo y Limpieza
+// En el Backend: updatePrestacionesPlanService
+const rows = prestaciones
+  .filter(p => p.prestacion_id !== undefined && p.prestacion_id !== null) // 🔥 FILTRO DE SEGURIDAD
+  .map(p => ({
+    plan_id: planId,
+    prestacion_id: p.prestacion_id,
+    valor: p.valor || '',
+    listar: p.listar ?? true
+  }));
+    console.log("🚀 Intentando insertar las siguientes filas:");
+    console.table(rows); // Esto te muestra una tabla hermosa en la terminal
+
+    // 3. Inserción
+    const { data, error: insError } = await supabase
+      .from('plan_prestacion')
+      .insert(rows)
+      .select(); // El .select() es clave para confirmar que se guardó
+
+    if (insError) {
+      console.error("❌ ERROR AL INSERTAR PRESTACIONES:", insError.message);
+      console.error("🔍 DETALLE:", insError.details);
+      throw insError;
+    }
+
+    console.log("🎉 INSERCIÓN EXITOSA. Filas creadas:", data?.length);
+
+  } catch (error: any) {
+    console.error("💥 FALLO CRÍTICO EN updatePrestacionesPlanService:", error.message);
+    throw error; // Re-lanzamos para que el controlador capture el 500
+  }
+};
+/**
+ * OBTIENE LA JERARQUÍA DE EMPRESAS > LÍNEAS > PLANES
+ */
+const getJerarquiaData = async () => {
+  const { data: empresasData, error } = await supabase
+    .from('empresas')
+    .select(`
+      id,
+      nombre,
+      planes (
+        id, 
+        nombre_plan,
+        precio,
+        linea
+      )
+    `)
+    .order('nombre');
+
+  if (error) throw error;
+  if (!empresasData) return [];
+
+  return empresasData.map((emp: any) => {
+    const grupos: Record<string, any> = {};
+    
+    emp.planes.forEach((plan: any) => {
+      const nombreGrupo = (plan.linea && typeof plan.linea === 'string' && plan.linea.trim() !== "")
+        ? plan.linea.trim() 
+        : "Individuales";
+
+      if (!grupos[nombreGrupo]) {
+        grupos[nombreGrupo] = { 
+          nombre: nombreGrupo, 
+          planes: [] 
+        };
+      }
+      grupos[nombreGrupo].planes.push(plan);
+    });
+
+    return {
+      id: emp.id,
+      nombre: emp.nombre,
+      lineas: Object.values(grupos) 
+    };
+  });
+};
+
+
+export { createPlan, getPlanesConTodo, getProduct, deleteProduct, searchProducts, getPrestacionesMaestras, updatePrestacionesPlanService, getJerarquiaData };

@@ -2,51 +2,6 @@ import { supabase } from '../config/database';
 
 const N8N_WEBHOOK = process.env.N8N_WEBHOOK_URL;
 
-/**
- * OBTIENE LA JERARQUÍA DE EMPRESAS > LÍNEAS > PLANES
- */
-const getJerarquiaData = async () => {
-  const { data: empresasData, error } = await supabase
-    .from('empresas')
-    .select(`
-      id,
-      nombre,
-      planes (
-        id, 
-        nombre_plan,
-        precio,
-        linea
-      )
-    `)
-    .order('nombre');
-
-  if (error) throw error;
-  if (!empresasData) return [];
-
-  return empresasData.map((emp: any) => {
-    const grupos: Record<string, any> = {};
-    
-    emp.planes.forEach((plan: any) => {
-      const nombreGrupo = (plan.linea && typeof plan.linea === 'string' && plan.linea.trim() !== "")
-        ? plan.linea.trim() 
-        : "Individuales";
-
-      if (!grupos[nombreGrupo]) {
-        grupos[nombreGrupo] = { 
-          nombre: nombreGrupo, 
-          planes: [] 
-        };
-      }
-      grupos[nombreGrupo].planes.push(plan);
-    });
-
-    return {
-      id: emp.id,
-      nombre: emp.nombre,
-      lineas: Object.values(grupos) 
-    };
-  });
-};
 
 /**
  * CREA UNA CLÍNICA Y SUS VÍNCULOS CON PLANES
@@ -90,63 +45,75 @@ const createClinicaConPlanes = async (clinicaData: any, planIds: string[]) => {
 /**
  * ACTUALIZA UNA CLÍNICA Y RECONSTRUYE SU CARTILLA
  */
-const updateClinicaFull = async (id: string, clinicaData: any, planIds: string[]) => {
-  console.log(`🔄 Intentando actualizar clínica ID: ${id}`);
-  console.log('📦 Nuevos datos:', clinicaData);
+// src/services/clinicasConPlanes.supabase.ts
+// src/services/clinicasConPlanes.supabase.ts
 
-  const { data: clinica, error: errorClinica } = await supabase
-    .from('clinicas')
-    .update(clinicaData)
-    .eq('id', id)
-    .select()
-    .single();
+// src/services/clinicasConPlanes.supabase.ts
 
-  if (errorClinica) {
-    console.error('❌ Error de Supabase al actualizar clínica:', errorClinica.message);
-    throw errorClinica;
-  }
+// En src/services/clinicasConPlanes.supabase.ts
 
-  // Eliminamos vínculos anteriores
-  console.log('🗑️ Limpiando vínculos antiguos en plan_clinica...');
-  const { error: errorDelete } = await supabase.from('plan_clinica').delete().eq('clinica_id', id);
-  
-  if (errorDelete) {
-    console.error('❌ Error al eliminar vínculos antiguos:', errorDelete.message);
-  }
+const updateClinicaFull = async (id: string, clinicaData: any, planIds: any[], atributoIds: any[]) => {
+  const clinicaIdNum = parseInt(id);
 
-  if (planIds && planIds.length > 0) {
-    console.log('🔗 Insertando nuevos vínculos:', planIds);
-    const vinculos = planIds.map(planId => ({
-      clinica_id: id,
-      plan_id: planId
-    }));
-    
-    const { error: errorVinculos } = await supabase.from('plan_clinica').insert(vinculos);
-    if (errorVinculos) {
-      console.error('❌ Error al re-vincular planes:', errorVinculos.message);
-      throw errorVinculos;
+  try {
+    // 🚀 PASO 0: ACTUALIZAR LOS DATOS BÁSICOS (Incluyendo las imágenes)
+    const { error: updateError } = await supabase
+      .from('clinicas')
+      .update({
+        nombre_abreviado: clinicaData.nombre_abreviado,
+        nombre: clinicaData.nombre,
+        descripcion: clinicaData.descripcion,
+        imagenes: clinicaData.imagenes,       // 🔥 AQUÍ SE GUARDAN LAS URLS
+        ubicaciones: clinicaData.ubicaciones,
+        especialidades: clinicaData.especialidades,
+        url: clinicaData.url
+      })
+      .eq('id', clinicaIdNum);
+
+    if (updateError) throw updateError;
+
+    // 1. LIMPIEZA DE PLANES (Tu código actual)
+    await supabase.from('plan_clinica').delete().eq('clinica_id', clinicaIdNum);
+    if (planIds?.length > 0) {
+      const planRows = [...new Set(planIds)].map(pId => ({
+        clinica_id: clinicaIdNum,
+        plan_id: Number(pId)
+      }));
+      await supabase.from('plan_clinica').insert(planRows);
     }
-  }
 
-  return { clinica, planesActualizados: planIds.length };
+    // 2. LIMPIEZA DE ATRIBUTOS (Tu código actual)
+    await supabase.from('clinica_atributo').delete().eq('clinica_id', clinicaIdNum);
+    if (atributoIds?.length > 0) {
+      const attrRows = [...new Set(atributoIds)].map(aId => ({
+        clinica_id: clinicaIdNum,
+        atributo_id: Number(aId)
+      }));
+      await supabase.from('clinica_atributo').insert(attrRows);
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error en updateClinicaFull:", error.message);
+    throw error;
+  }
 };
 
 /**
- * ELIMINA UNA CLÍNICA (Y POR CASCADE SUS VÍNCULOS)
+ * 4. ELIMINAR CLÍNICA FULL
  */
 const deleteClinicaFull = async (id: string) => {
-  console.log(`🗑️ Eliminando clínica ID: ${id}`);
-  const { error } = await supabase.from('clinicas').delete().eq('id', id);
-  if (error) {
-    console.error('❌ Error al eliminar clínica:', error.message);
-    throw error;
-  }
+  const { error } = await supabase
+    .from('clinicas')
+    .delete()
+    .eq('id', parseInt(id));
+
+  if (error) throw error;
   return { success: true };
 };
 
 export { 
-  createClinicaConPlanes, 
-  getJerarquiaData, 
+  createClinicaConPlanes,  
   updateClinicaFull, 
-  deleteClinicaFull 
+  deleteClinicaFull
 };

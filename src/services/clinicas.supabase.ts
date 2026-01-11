@@ -1,10 +1,7 @@
-import { supabase } from '../config/database'; // Asegúrate de importar tu cliente
-
-const N8N_WEBHOOK = process.env.N8N_WEBHOOK_URL;
-
-
-
 // services/clinicas.supabase.ts
+import { supabase } from '../config/database';
+
+// 1. LISTADO (Ya lo tenías bien)
 const getProducts = async () => {
   const { data, error } = await supabase
     .from('clinicas')
@@ -14,41 +11,46 @@ const getProducts = async () => {
         plan_id
       )
     `)
-    .order('nombre', { ascending: true }); // Opcional: para que el dashboard esté ordenado
+    .order('nombre', { ascending: true });
   
+  if (error) throw error;
+  return data;
+};
+
+// 2. DETALLE (ESTE ES EL QUE TENEMOS QUE ARREGLAR PARA EL HITO)
+const getProduct = async (id: string) => {
+  const { data, error } = await supabase
+    .from('clinicas')
+    .select(`
+      *,
+      plan_clinica (
+        plan_id
+      )
+    `) // <--- Agregamos esto para que traiga los planes tildados
+    .eq('id', id)
+    .maybeSingle(); // Usamos maybeSingle en lugar de single para evitar el error 500 si no existe
+    
   if (error) {
-    console.error("❌ Error en getProducts:", error);
+    console.error("❌ Error en getProduct Supabase:", error);
     throw error;
   }
   return data;
 };
 
-const getProduct = async (id: string) => {
+// 3. SEARCH
+const searchProducts = async (query: string) => {
   const { data, error } = await supabase
     .from('clinicas')
-    .select('*')
-    .eq('id', id)
-    .single();
-    
-  return data;
-};
-
-
-
-
-// 3. SEARCH: Búsqueda por texto (Case Insensitive)
-const searchProducts = async (query: string) => {
-  // En Supabase/Postgres usamos .ilike para que no importe mayúsculas/minúsculas
-  // El símbolo % es el comodín para buscar "contiene"
-  const { data: responseSearch, error } = await supabase
-    .from('clinicas')
-    .select('*')
+    .select(`
+      *,
+      plan_clinica (
+        plan_id
+      )
+    `) // También lo agregamos acá por si buscás en el admin
     .ilike('nombre', `%${query}%`); 
 
   if (error) throw error;
-  return responseSearch;
+  return data;
 };
-// ... updateProduct y deleteProduct siguen la misma lógica de supabase.from().update() / delete()
 
-
-export {  getProducts, getProduct, searchProducts };
+export { getProducts, getProduct, searchProducts };

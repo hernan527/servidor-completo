@@ -1,21 +1,36 @@
 import { Request, Response } from 'express';
 import { collections } from '../config/database';
 import { handleHttp } from "../utils/error.handle";
-import { createClinicaConPlanes, getJerarquiaData, updateClinicaFull, deleteClinicaFull } from "../services/clinicasConPlanes.supabase";
+import { createClinicaConPlanes, updateClinicaFull, deleteClinicaFull } from "../services/clinicasConPlanes.supabase";
 
-// ... imports ...
-
+/**
+ * ACTUALIZAR CLÍNICA (Y su cartilla de planes)
+ * Borra las filas anteriores y pone las nuevas
+ */
 const updateItemFull = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { clinicaData, planIds } = req.body;
-    const response = await updateClinicaFull(id, clinicaData, planIds);
+    
+    // 1. Extraemos los 3 datos que vienen del front
+    const { clinicaData, planIds, atributoIds } = req.body; 
+    
+    // 2. Pasamos los 4 argumentos (id + los 3 del body)
+    // Agregamos el "atributoIds || []" al final para que no chille TS
+    const response = await updateClinicaFull(
+        id, 
+        clinicaData || {}, 
+        planIds || [], 
+        atributoIds || [] 
+    );
+
     res.status(200).json(response);
   } catch (e) {
     handleHttp(res, 'ERROR_UPDATE_CLINICA_FULL');
   }
 };
-
+/**
+ * ELIMINAR CLÍNICA (Y sus referencias)
+ */
 const deleteItemFull = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -25,6 +40,10 @@ const deleteItemFull = async (req: Request, res: Response) => {
     handleHttp(res, 'ERROR_DELETE_CLINICA_FULL');
   }
 };
+
+/**
+ * CREAR CLÍNICA (Con planes iniciales)
+ */
 const createItemFull = async (req: Request, res: Response) => {
   console.log("📥 BACKEND: Body recibido:", req.body);
   try {
@@ -36,28 +55,34 @@ const createItemFull = async (req: Request, res: Response) => {
     const response = await createClinicaConPlanes(clinicaData, planIds);
     res.status(201).json(response);
   } catch (e: any) {
-    console.error("💥 BACKEND: Fallo en createItemFull:", e); // Esto imprimirá el error real de Supabase
+    console.error("💥 BACKEND: Fallo en createItemFull:", e);
     handleHttp(res, 'ERROR_CREATE_CLINICA_FULL');
   }
 };
-// Nuevo Service para el Admin de Clínicas
-// En clinicasConPlanes.supabase.ts (Controlador)
-// controllers/clinicasConPlanes.supabase.ts
 
-const getJerarquia = async (req: Request, res: Response) => {
+
+// src/controllers/clinicasConPlanes.supabase.ts
+
+const updateClinicaHandler = async (req: Request, res: Response) => {
   try {
-    const response = await getJerarquiaData(); 
-    
-    // Si no hay datos, enviamos un array vacío, pero que es JSON válido []
-    if (!response) {
-      return res.status(200).json([]); 
-    }
+    const { id } = req.params;
+    // 1. Extraemos 'atributoIds' del body que viene del frontend
+    const { clinicaData, planIds, atributoIds } = req.body;
 
-    res.status(200).json(response);
-  } catch (e) {
-    // En lugar de enviar texto, enviamos un objeto de error
-    res.status(500).json({ error: 'ERROR_GET_JERARQUIA' });
+    // 2. Pasamos los 4 argumentos al Service (esto mata el error TS2554)
+    const response = await updateClinicaFull(
+      id, 
+      clinicaData || {}, 
+      planIds || [], 
+      atributoIds || [] // <--- El argumento que faltaba
+    );
+    
+    return res.status(200).json(response);
+  } catch (error: any) {
+    console.error("Error en updateClinicaHandler:", error.message);
+    return res.status(500).json({ error: error.message });
   }
 };
 
-export { createItemFull, getJerarquia, updateItemFull,  deleteItemFull};
+
+export { createItemFull, updateItemFull,  deleteItemFull, updateClinicaHandler };

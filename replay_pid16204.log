@@ -1,0 +1,62 @@
+version 2
+JvmtiExport can_access_local_variables 0
+JvmtiExport can_hotswap_or_post_breakpoint 1
+JvmtiExport can_post_on_exceptions 0
+# 363 ciObject found
+instanceKlass jdk/internal/loader/URLClassPath
+ciInstanceKlass java/lang/Cloneable 1 0 7 100 1 100 1 1 1
+instanceKlass org/springframework/context/i18n/TimeZoneAwareLocaleContext
+instanceKlass org/eclipse/lsp4j/TextDocumentContentChangeEvent
+instanceKlass org/eclipse/lsp4j/adapters/VersionedTextDocumentIdentifierTypeAdapter$Factory
+instanceKlass com/google/gson/internal/bind/NumberTypeAdapter$2
+instanceKlass  @bci org/eclipse/lsp4j/jsonrpc/json/adapters/CollectionTypeAdapter$Factory getConstructor (Ljava/lang/Class;)Ljava/util/function/Supplier; 10 <appendix> member <vmtarget> ; # org/eclipse/lsp4j/jsonrpc/json/adapters/CollectionTypeAdapter$Factory$$Lambda+0x0000022090317970
+instanceKlass  @bci com/salesforce/slds/lsp/codeactions/CodeActionConverter convert (Lorg/eclipse/lsp4j/CodeActionParams;)Ljava/util/List; 52 <appendix> argL0 ; # com/salesforce/slds/lsp/codeactions/CodeActionConverter$$Lambda+0x0000022090317720
+instanceKlass  @bci com/salesforce/slds/lsp/codeactions/CodeActionConverter convert (Lorg/eclipse/lsp4j/CodeActionParams;)Ljava/util/List; 42 <appendix> member <vmtarget> ; # com/salesforce/slds/lsp/codeactions/CodeActionConverter$$Lambda+0x00000220903174c8
+instanceKlass  @bci com/salesforce/slds/lsp/codeactions/CodeActionConverter convert (Lorg/eclipse/lsp4j/CodeActionParams;)Ljava/util/List; 29 <appendix> member <vmtarget> ; # com/salesforce/slds/lsp/codeactions/CodeActionConverter$$Lambda+0x0000022090317260
+instanceKlass org/eclipse/lsp4j/jsonrpc/CompletableFutures$FutureCancelChecker
+instanceKlass org/eclipse/lsp4j/jsonrpc/CompletableFutures
+instanceKlass  @bci com/salesforce/slds/lsp/services/TextDocumentServiceImpl codeAction (Lorg/eclipse/lsp4j/CodeActionParams;)Ljava/util/concurrent/CompletableFuture; 2 <appendix> member <vmtarget> ; # com/salesforce/slds/lsp/services/TextDocumentServiceImpl$$Lambda+0x0000022090316ba0
+instanceKlass org/eclipse/lsp4j/DiagnosticRelatedInformation
+instanceKlass org/eclipse/lsp4j/DiagnosticCodeDescription
+instanceKlass org/eclipse/lsp4j/Position
+instanceKlass org/eclipse/lsp4j/CodeActionContext
+instanceKlass java/lang/Class$Holder
+instanceKlass  @bci java/lang/ClassLoader definePackage (Ljava/lang/String;Ljava/lang/Module;)Ljava/lang/Package; 73 <appendix> member <vmtarget> ; # java/lang/ClassLoader$$Lambda+0x0000022090170a30
+instanceKlass  @bci jdk/internal/loader/BootLoader$PackageHelper findModule (Ljava/lang/String;)Ljava/lang/Module; 90 <appendix> member <vmtarget> ; # jdk/internal/loader/BootLoader$PackageHelper$$Lambda+0x00000220901707f8
+instanceKlass jdk/internal/loader/BootLoader$PackageHelper
+instanceKlass ch/qos/logback/classic/spi/ClassPackagingData
+instanceKlass ch/qos/logback/classic/spi/STEUtil
+instanceKlass ch/qos/logback/classic/spi/PackagingDataCalculator
+instanceKlass ch/qos/logback/classic/spi/ThrowableProxyUtil
+instanceKlass ch/qos/logback/classic/spi/StackTraceElementProxy
+instanceKlass ch/qos/logback/classic/spi/ThrowableProxy
+instanceKlass java/util/logging/LogRecord
+instanceKlass  @bci com/salesforce/slds/lsp/diagnostics/Diagnoser runDiagnose (Lorg/eclipse/lsp4j/TextDocumentItem;)V 74 <appendix> member <vmtarget> ; # com/salesforce/slds/lsp/diagnostics/Diagnoser$$Lambda+0x00000220903143a0
+instanceKlass com/salesforce/slds/validation/validators/impls/recommendation/InvalidValidator$1
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator getOverrides (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 47 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator$$Lambda+0x0000022090313f40
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator getOverrides (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 34 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator$$Lambda+0x0000022090313ce0
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator getOverrides (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 24 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/override/ComponentOverrideValidator$$Lambda+0x0000022090313a90
+instanceKlass  @bci com/salesforce/slds/validation/runners/ValidateRunner run ()V 183 <appendix> argL0 ; # com/salesforce/slds/validation/runners/ValidateRunner$$Lambda+0x0000022090313840
+instanceKlass  @bci com/salesforce/slds/validation/runners/ValidateRunner run ()V 173 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/runners/ValidateRunner$$Lambda+0x00000220903135e8
+instanceKlass  @bci com/salesforce/slds/validation/runners/ValidateRunner run ()V 161 <appendix> argL0 ; # com/salesforce/slds/validation/runners/ValidateRunner$$Lambda+0x0000022090313398
+instanceKlass  @bci com/salesforce/slds/validation/runners/ValidateRunner run ()V 151 <appendix> argL0 ; # com/salesforce/slds/validation/runners/ValidateRunner$$Lambda+0x0000022090313138
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor process (Lcom/salesforce/slds/shared/models/core/Entry;Ljava/util/List;)Ljava/util/List; 54 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090312e90
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor process (Lcom/salesforce/slds/shared/models/core/Entry;Ljava/util/List;)Ljava/util/List; 44 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090312c38
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor process (Lcom/salesforce/slds/shared/models/core/Entry;Ljava/util/List;)Ljava/util/List; 33 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x00000220903129d0
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor process (Lcom/salesforce/slds/shared/models/core/Entry;Ljava/util/List;)Ljava/util/List; 20 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090312768
+instanceKlass  @bci com/salesforce/slds/shared/models/core/Entry getAnnotations ()Ljava/util/List; 56 <appendix> argL0 ; # com/salesforce/slds/shared/models/core/Entry$$Lambda+0x0000022090312518
+instanceKlass  @bci com/salesforce/slds/shared/models/core/Entry getAnnotations ()Ljava/util/List; 46 <appendix> argL0 ; # com/salesforce/slds/shared/models/core/Entry$$Lambda+0x00000220903122c8
+instanceKlass  @bci com/salesforce/slds/shared/models/core/Entry getAnnotations ()Ljava/util/List; 36 <appendix> argL0 ; # com/salesforce/slds/shared/models/core/Entry$$Lambda+0x0000022090312078
+instanceKlass  @bci com/salesforce/slds/shared/models/core/Entry getAnnotations ()Ljava/util/List; 26 <appendix> argL0 ; # com/salesforce/slds/shared/models/core/Entry$$Lambda+0x0000022090311e18
+instanceKlass  @bci com/salesforce/slds/shared/models/core/Entry getAnnotations ()Ljava/util/List; 16 <appendix> argL0 ; # com/salesforce/slds/shared/models/core/Entry$$Lambda+0x0000022090311bb8
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 56 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090311508
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 46 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x00000220903112b8
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 36 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090311068
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 26 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090310e18
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 16 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090310bc8
+instanceKlass  @bci com/salesforce/slds/validation/processors/SortAndFilterProcessor extractUtilitiesRange (Ljava/util/List;)Ljava/util/List; 6 <appendix> argL0 ; # com/salesforce/slds/validation/processors/SortAndFilterProcessor$$Lambda+0x0000022090310968
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator matches (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 63 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator$$Lambda+0x0000022090310708
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator matches (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 53 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator$$Lambda+0x00000220903104b8
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator matches (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 43 <appendix> member <vmtarget> ; # com/salesforce/slds/validation/validators/impls/recommendation/PriorityValidator$$Lambda+0x0000022090310260
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/recommendation/InvalidValidator matches (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 52 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/recommendation/InvalidValidator$$Lambda+0x0000022090310000
+instanceKlass  @bci com/salesforce/slds/validation/validators/impls/recommendation/InvalidValidator matches (Lcom/salesforce/slds/shared/models/core/Entry;Lcom/salesforce/slds/shared/models/core/Bundle;Lcom/salesforce/slds/shared/models/context/Context;)Ljava/util/List; 42 <appendix> argL0 ; # com/salesforce/slds/validation/validators/impls/recommendation/InvalidValidator$$Lambda+0x000002209030ccb8
