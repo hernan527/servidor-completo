@@ -58,7 +58,7 @@ export function valor_SanCor(aportesOS, coeficiente, edad_1, edad_2, numHijos, p
     // 3. Bucle Final
     for (let j in precios) {
                                        // console.log('3. Bucle Final precios ',precios);
-                                       console.log('3. Bucle Final j ',j);
+                                       // console.log('3. Bucle Final j ',j);
 
         let otrosBenPrecios = [
     {"col_1": 1, "col_2": 34792, "col_3": 32855, "CS": 22550, "SSPRO": 3114, "SSOD": 7191, "SSAC": 1628, "SUF": 309, "col_9": 22550},
@@ -68,40 +68,47 @@ export function valor_SanCor(aportesOS, coeficiente, edad_1, edad_2, numHijos, p
     {"col_1": 5, "col_2": 153346, "col_3": 142961, "CS": 112750, "SSPRO": 15797, "SSOD": 14414, "SSAC": 8840, "SUF": 1545, "col_9": 112750},
     {"col_1": 6, "col_2": 180504, "col_3": 168577, "CS": 135300, "SSPRO": 18863, "SSOD": 14414, "SSAC": 10073, "SUF": 1854, "col_9": 135300}
     ];
-                               console.log('3. Bucle Final otrosBenPrecios ',otrosBenPrecios);
+                               // console.log('3. Bucle Final otrosBenPrecios ',otrosBenPrecios);
 
         let plan_gen = j.substring(3, 6);
-                               console.log('3. Bucle Final plan_gen ',plan_gen);
+                               // console.log('3. Bucle Final plan_gen ',plan_gen);
 
         let nombrePlanBase = functions.planNombre(genSanCor, plan_gen, j.substring(3));
-                                       console.log('3. Bucle Final nombrePlanBase ',nombrePlanBase);
+                                       // console.log('3. Bucle Final nombrePlanBase ',nombrePlanBase);
 
         let promoInfo = functions.promoDescuento(precios[j], promocion, con_afinidad);
-                                             console.log('3. Bucle Final promoInfo ',promoInfo);
+                                             // console.log('3. Bucle Final promoInfo ',promoInfo);
 
         let precioConPromo = promoInfo[0];
-                                             console.log('3. Bucle Final precioConPromo ',precioConPromo);
+                                             // console.log('3. Bucle Final precioConPromo ',precioConPromo);
 
         let cuotaSocial = otrosBenPrecios[grupoFam - 1]['CS'];
-        console.log('3. Bucle Final  cuotaSocial ',cuotaSocial);
+        // console.log('3. Bucle Final  cuotaSocial ',cuotaSocial);
 
         let supraSalud = functions.suprasSalud(nombrePlanBase, otrosBenPrecios, grupoFam)
-        console.log('3. Bucle Final supraSalud ',supraSalud);
+        // console.log('3. Bucle Final supraSalud ',supraSalud);
 
 
 // 2. Aplicamos la lógica: 
 // SI es 5000 o 6000 -> Cuota Social + SupraSalud
 // SI NO -> Solo Cuota Social
-let otrosCargos = (nombrePlanBase.includes('5000') || nombrePlanBase.includes('6000')) 
-    ? parseInt(cuotaSocial) + parseInt(supraSalud)
-    : parseInt(cuotaSocial);
-        console.log('3. Bucle Final otrosCargos',otrosCargos);
+// 2. Aplicamos la lógica: 
+let otrosCargos = (
+    nombrePlanBase.includes('5000') || 
+    nombrePlanBase.includes('6000') || 
+    ((nombrePlanBase.includes('4000') || nombrePlanBase.includes('4500')) && !nombrePlanBase.includes('GEN'))
+) 
+? parseInt(cuotaSocial) + parseInt(supraSalud)
+: parseInt(cuotaSocial);
+
+
+        // console.log('3. Bucle Final otrosCargos',otrosCargos);
 
         let precioFinalConCargos = precioConPromo + otrosCargos;
-        console.log('3. Bucle Final precioFinalConCargos',precioFinalConCargos);
+        // console.log('3. Bucle Final precioFinalConCargos',precioFinalConCargos);
 
         let precioFinal = functions.final(aportesOS[0], descOS, precioFinalConCargos);
-console.log('3. Bucle Final precioFinal',precioFinal);
+// console.log('3. Bucle Final precioFinal',precioFinal);
 
 
         array.push({
