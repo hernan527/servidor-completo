@@ -88,9 +88,9 @@ export function valor_Swiss(
 // Agregamos la condición de que edad_2 sea > 0 si es pareja, 
 // o simplemente validamos edad_1 si es individual.
 if (edad_1 < 25 && (edad_2 < 25 || edad_2 === 0)) {
-    promocion = 50;
+    promocion = 0.50;
 } else {
-    promocion = 15;
+    promocion = 0.15;
 }
         let empresaPlan = [j][0];
         let _id = empresaPlan;
