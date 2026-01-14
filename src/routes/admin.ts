@@ -6,7 +6,7 @@ const router = Router();
 
 // Key: fecha_corte
 
-// Value: 2026-01-08T23:59:59 (Por ejemplo, si querés procesar todo lo que se haya hecho antes de la medianoche de hoy).
+// Value: 2030-01-08T23:59:59 (Por ejemplo, si querés procesar todo lo que se haya hecho antes de la medianoche de hoy).
 
 // La URL en Postman se vería así: .../generar-maestro?key=therollingstones&fecha_corte=2026-01-08T23:59:59
 router.post('/generar-maestro', async (req, res) => {

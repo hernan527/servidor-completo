@@ -1,13 +1,11 @@
 import { supabase } from '../config/database'; 
-import { calcularPrecio } from './cotizacion'; // Tu función que pide (req, res)
+import { calcularPrecio } from './cotizacion';
 
 export const procesarTodo = async (fechaManual?: string) => {
-  // 1. Si vos pasás una fecha (ej: "2026-01-08T15:00:00"), usa esa.
-  // 2. Si no pasás nada, usa el momento exacto del inicio.
   const FECHA_CORTE = fechaManual ? new Date(fechaManual).toISOString() : new Date().toISOString(); 
   
-  console.log(`⏳ Iniciando sincronización.`);
-  console.log(`🎯 Objetivo: Procesar todo lo ANTERIOR a: ${FECHA_CORTE}`);
+  console.log(`⏳ Iniciando sincronización de 7000 registros.`);
+  console.log(`🎯 Objetivo: Procesar todo lo anterior a: ${FECHA_CORTE}`);
 
   const TRAMO_SIZE = 100;
   let totalProcesadas = 0;
@@ -27,10 +25,13 @@ export const procesarTodo = async (fechaManual?: string) => {
     }
 
     if (!filas || filas.length === 0) {
-      console.log("✨ ¡Sincronización completa! No quedan registros anteriores al corte.");
+      console.log("✨ ¡Sincronización completa!");
       continuar = false;
       break;
     }
+
+    // --- CAMBIO AQUÍ: Creamos un array para acumular los 100 resultados ---
+    const batchResultados = [];
 
     for (const fila of filas) {
       try {
@@ -53,19 +54,29 @@ export const procesarTodo = async (fechaManual?: string) => {
           } as any, mockRes as any);
         });
 
-        await supabase
-          .from('cotizaciones_maestras')
-          .upsert({
-            id: fila.id,
-            respuesta: resultado,
-            updated_at: new Date().toISOString() 
-          });
+        // Acumulamos el objeto en lugar de hacer await a la base de datos aquí
+        batchResultados.push({
+          id: fila.id,
+          respuesta: resultado,
+          updated_at: new Date().toISOString() 
+        });
 
-        totalProcesadas++;
-        if (totalProcesadas % 50 === 0) console.log(`🚀 Procesadas: ${totalProcesadas}...`);
-        
       } catch (err) {
-        console.error(`⚠️ Error en fila ${fila.id}, saltando a la siguiente...`);
+        console.error(`⚠️ Error en fila ${fila.id}, saltando...`);
+      }
+    }
+
+    // --- GUARDADO MASIVO: Enviamos los 100 de golpe ---
+    if (batchResultados.length > 0) {
+      const { error: upsertError } = await supabase
+        .from('cotizaciones_maestras')
+        .upsert(batchResultados);
+
+      if (upsertError) {
+        console.error("❌ Error al guardar el lote:", upsertError);
+      } else {
+        totalProcesadas += batchResultados.length;
+        console.log(`🚀 Procesadas acumuladas: ${totalProcesadas} / 7000`);
       }
     }
   }

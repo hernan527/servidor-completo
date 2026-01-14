@@ -72,7 +72,7 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
 console.log(' INICIANDO COTIZACION ')
-console.log('grupo ', grupo)
+// console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
   // console.log('beneficiariosF184 ', beneficiariosF184)
@@ -467,9 +467,9 @@ const argsSanCor = [
     bonAfinidad, 
     gen
 ];
-console.log('argsSanCor :',argsSanCor);
+// console.log('argsSanCor :',argsSanCor);
     valor_SanCor = functions.valor_SanCor(...argsSanCor);
-console.log('valor_SanCor',valor_SanCor);
+// console.log('valor_SanCor',valor_SanCor);
 concatenarPrecios = [...concatenarPrecios, ...valor_SanCor];
   };
 // ... dentro de calcularPrecio ...
@@ -659,8 +659,8 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        });
   console.log(' FINALIZANDO COTIZACION ')
 
-console.log('concatenarPrecios   :');
-console.log(concatenarPrecios);
+// console.log('concatenarPrecios   :');
+// console.log(concatenarPrecios);
  res.status(200).json(concatenarPrecios);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 
