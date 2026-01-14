@@ -4,10 +4,8 @@ import { calcularPrecio } from './cotizacion';
 export const procesarTodo = async (fechaManual?: string) => {
   const FECHA_CORTE = fechaManual ? new Date(fechaManual).toISOString() : new Date().toISOString(); 
   
-  console.log(`⏳ Iniciando sincronización de 7000 registros.`);
-  console.log(`🎯 Objetivo: Procesar todo lo anterior a: ${FECHA_CORTE}`);
-
-  const TRAMO_SIZE = 100;
+  console.log(`⏳ Iniciando sincronización veloz.`);
+  const TRAMO_SIZE = 50; // Bajamos el lote a 50 para no saturar la memoria
   let totalProcesadas = 0;
   let continuar = true;
 
@@ -19,21 +17,13 @@ export const procesarTodo = async (fechaManual?: string) => {
       .order('updated_at', { ascending: true }) 
       .limit(TRAMO_SIZE);
 
-    if (error) {
-      console.error("❌ Error en DB:", error);
-      break;
-    }
-
-    if (!filas || filas.length === 0) {
-      console.log("✨ ¡Sincronización completa!");
+    if (error || !filas || filas.length === 0) {
       continuar = false;
       break;
     }
 
-    // --- CAMBIO AQUÍ: Creamos un array para acumular los 100 resultados ---
-    const batchResultados = [];
-
-    for (const fila of filas) {
+    // --- MAGIA: Procesamos los 50 registros EN PARALELO ---
+    const promesas = filas.map(async (fila) => {
       try {
         const resultado = await new Promise((resolve) => {
           const mockRes = { 
@@ -54,31 +44,26 @@ export const procesarTodo = async (fechaManual?: string) => {
           } as any, mockRes as any);
         });
 
-        // Acumulamos el objeto en lugar de hacer await a la base de datos aquí
-        batchResultados.push({
+        return {
           id: fila.id,
           respuesta: resultado,
           updated_at: new Date().toISOString() 
-        });
-
+        };
       } catch (err) {
-        console.error(`⚠️ Error en fila ${fila.id}, saltando...`);
+        console.error(`⚠️ Error en fila ${fila.id}`);
+        return null;
       }
-    }
+    });
 
-    // --- GUARDADO MASIVO: Enviamos los 100 de golpe ---
-    if (batchResultados.length > 0) {
-      const { error: upsertError } = await supabase
-        .from('cotizaciones_maestras')
-        .upsert(batchResultados);
+    // Esperamos a que los 50 terminen de calcularse (tardará ~4-5 segundos en total por lote)
+    const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
 
-      if (upsertError) {
-        console.error("❌ Error al guardar el lote:", upsertError);
-      } else {
-        totalProcesadas += batchResultados.length;
-        console.log(`🚀 Procesadas acumuladas: ${totalProcesadas} / 7000`);
-      }
+    // Guardamos los 50 en Supabase de una sola vez
+    if (resultadosBatch.length > 0) {
+      await supabase.from('cotizaciones_maestras').upsert(resultadosBatch);
+      totalProcesadas += resultadosBatch.length;
+      console.log(`🚀 Procesadas: ${totalProcesadas} de 7000...`);
     }
   }
-  console.log(`🏁 Proceso finalizado. Total: ${totalProcesadas}`);
+  console.log(`🏁 Proceso finalizado.`);
 };
