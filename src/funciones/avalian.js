@@ -78,7 +78,7 @@ export function valor_Avalian(
         array.push({
             item_id: planId,
             name: 'Avalian ' + planId.split('_').pop(),
-            precio: precioFinal,
+            precio: precioAntesDeOS,
             valorLista: valorBruto,
             aporteOS: tipo_IngresoPDMI !== 'P' ? descOS : 0
         });

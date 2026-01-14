@@ -33,6 +33,7 @@ const createProduct = async (item: any) => {
 
 const getProducts = async () => {
   const responseGet = await PreciosModel.find({});
+
   return responseGet
 };
 

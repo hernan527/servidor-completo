@@ -310,60 +310,48 @@ return edadID
 // <!----------------------Funcion PRODUCT ID MEDIFE start----------------------------> 
 
 
-export function productIdMedife(edad_1, edad_2, tipoAsoc,group) {
+export function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
+    let edadIdMedife = '';
+    
+    // Aseguramos valores numéricos
+    let age = Number(edad_1);
+    let age2 = (group === 1 || group === 2 || edad_2 === null) ? 0 : Number(edad_2);
 
-	let edadIdMedife = '';
-	let age2 = edad_2;
-	let age = edad_1;
-if(group === 1){
-	age2 = 0;
-}else if(group === 2){
-	age2 = 0;}
-	else{}
+    console.log('🚀 Procesando Medifé:', { edad_1: age, edad_2: age2, tipoAsoc, group });
 
-
-	if (edad_2 === null) {
-        age2 = 0;
+    // Lógica para que 'age' siempre sea el mayor de los dos (titular/conyuge)
+    if (age2 > age) {
+        [age, age2] = [age2, age]; // Swap elegante
     }
 
-	if (age2 > age) {
-		age2 = age;
-		age = edad_2;
-	};
-	if (age2 >= 18) {
-		if (age <= 25) {
-			edadIdMedife = tipoAsoc + 'MAT-JOV' + 0.25;
-		} else if (age <= 35 && age >= 26) {
-			edadIdMedife = tipoAsoc + 'MAT-JOV' + 26.35;
-		} else if (age <= 40 && age >= 36) {
-			edadIdMedife = tipoAsoc + 'MAT' + 36.40;
-		} else if (age <= 50 && age >= 41) {
-			edadIdMedife = tipoAsoc + 'MAT' + 41-50;
-		} else if (age <= 60 && age >= 51) {
-			edadIdMedife = tipoAsoc + 'MAT' + 51.60;
-		} else if (age <= 65 && age >= 61) {
-			edadIdMedife = tipoAsoc + 'MAT' + 61.65;
-		}
-	} else if (age2 == 0) {
-		if (age <= 25) {
-			edadIdMedife = tipoAsoc + 'IND-JOV' + 0.25;
-		} else if (age <= 35 && age >= 26) {
-			edadIdMedife = tipoAsoc + 'IND-JOV' + 26.35;
-		} else if (age <= 40 && age >= 36) {
-			edadIdMedife = tipoAsoc + 'IND' + 36.40;
-		} else if (age <= 45 && age >= 41) {
-			edadIdMedife = tipoAsoc + 'IND' + 42.45;
-		}else if (age <= 50 && age >= 46) {
-			edadIdMedife = tipoAsoc + 'IND' + 46.50;
-		} else if (age <= 60 && age >= 51) {
-			edadIdMedife = tipoAsoc + 'IND' + 51.60;
-		}  else if (age <= 60 && age >= 51) {
-			edadIdMedife = tipoAsoc + 'IND' + 61.65;
-	}else {
-			edadIdMedife = '';
-		}
-	}
-	return edadIdMedife;
+    // Determinamos si es Matrimonio o Individual
+    const modal = (age2 >= 18) ? 'MAT' : 'IND';
+    const prefijo = 'medife' + tipoAsoc + modal;
+
+    // Evaluación de rangos
+    if (age <= 25) {
+        edadIdMedife = prefijo + '0-25';
+    } else if (age <= 35) {
+        edadIdMedife = prefijo + '26-35';
+    } else if (age <= 40) {
+        edadIdMedife = prefijo + '36-40';
+    } else {
+        // Rangos específicos según modalidad
+        if (modal === 'MAT') {
+            if (age <= 50) edadIdMedife = prefijo + '41-50';
+            else if (age <= 60) edadIdMedife = prefijo + '51-60';
+            else if (age <= 65) edadIdMedife = prefijo + '61-65';
+        } else {
+            // Modalidad Individual
+            if (age <= 45) edadIdMedife = prefijo + '41-45';
+            else if (age <= 50) edadIdMedife = prefijo + '46-50';
+            else if (age <= 60) edadIdMedife = prefijo + '51-60';
+            else if (age <= 65) edadIdMedife = prefijo + '61-65';
+        }
+    }
+
+    console.log('🆔 ID Generado:', edadIdMedife);
+    return edadIdMedife;
 }
 
 // <!----------------------Funcion PRODUCT ID MEDIFE end----------------------------> 

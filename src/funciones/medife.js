@@ -11,9 +11,12 @@ export function valor_Medife(
     console.log('aportesOS :', aportesOS)
     let tipo_de_socio = aportesOS[0];
     let con_afinidad = true;
-    console.log(`Hijos: ${numkids} | Afinidad: ${con_afinidad} | Tipo Socio: ${tipo_de_socio}`);
+    console.log('Hijos: ',numkids, ' | Afinidad: ',con_afinidad,' | Tipo Socio: ',tipo_de_socio);
     let array = [];
-    
+        console.log('precioTitularMedife :', precioTitularMedife)
+    console.log('precioHijoMedife:', precioHijoMedife)
+    console.log('coeficienteMedife :', coeficienteMedife)
+
     // 1. Cálculo de Descuento de Obra Social
     let descOS = functions.calculodescOS(
         aportesOS[0], aportesOS[2], aportesOS[3], 
@@ -52,7 +55,7 @@ export function valor_Medife(
         array.push({
             item_id: j,
             name: 'Medifé ' + j.split('_').pop(),
-            precio: precioFinal,
+            precio: precioConPromo,
             valorLista: valorLista,
             promoDescuento: montoDesc,
             aporteOS: (tipo_de_socio !== 'P') ? descOS : 0

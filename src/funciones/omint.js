@@ -104,7 +104,7 @@ for ( let j in precios) {
 var plan = new Object();
                 plan.item_id = _id;
                 plan.name = 'OMINT  ' + nombre;
-                plan.precio = precio;
+                plan.precio = precioTotal;
                 plan.promoPorcentaje = promo;
                 plan.promoDescuento = descPromo;
                 plan.valorLista = precios[j];

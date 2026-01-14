@@ -115,15 +115,15 @@ let IdDoctored = functions.productIdDoctored(edad_1, edad_2, tipo_IngresoPDMI, g
 // <! ----------AVALIAN---------------------------------------------------->
 let IdsAvalian = functions.productIdAvalian(edad_1, edad_2, tipo_IngresoPDMI, group);
 // <! ----------CRISTAL y RAS---------------------------------------------------->
-let idsCristalyRas = functions.productIdRasCristal(edad_1, edad_2, tipo_IngresoPDMI, group);  
-// <! ----------LUIS PASTEUR---------------------------------------------------->
-let idsLuisPasteur = functions.productIdLuisPasteur(edad_1, edad_2,grupo[3], tipo_IngresoPDMI, group)
-// <! ----------ASMEPRIV---------------------------------------------------->
-let idsAsmepriv = functions.productIdAsmepriv(edad_1, edad_2,grupo[3], tipo_IngresoPDMI, group)
-// <! ----------BAYRES PLAN---------------------------------------------------->
-let idsBayresPlan = functions.productIBayres(edad_1, edad_2, group)
-// <! ----------HOMINIS---------------------------------------------------->
-let idsHominis = functions.productIdHominis(edad_1, edad_2, tipo_IngresoPDMI, grupo[3], group)
+// let idsCristalyRas = functions.productIdRasCristal(edad_1, edad_2, tipo_IngresoPDMI, group);  
+// // <! ----------LUIS PASTEUR---------------------------------------------------->
+// let idsLuisPasteur = functions.productIdLuisPasteur(edad_1, edad_2,grupo[3], tipo_IngresoPDMI, group)
+// // <! ----------ASMEPRIV---------------------------------------------------->
+// let idsAsmepriv = functions.productIdAsmepriv(edad_1, edad_2,grupo[3], tipo_IngresoPDMI, group)
+// // <! ----------BAYRES PLAN---------------------------------------------------->
+// let idsBayresPlan = functions.productIBayres(edad_1, edad_2, group)
+// // <! ----------HOMINIS---------------------------------------------------->
+// let idsHominis = functions.productIdHominis(edad_1, edad_2, tipo_IngresoPDMI, grupo[3], group)
 
 
 async function fetchProductPrice(id: string) {
@@ -175,7 +175,7 @@ async function fetchPrices() {
       { variable: 'precioSanCorTitular', id: idSancor[0] },
       { variable: 'precioConyugeSanCor', id: idSancorConyuge },
       { variable: 'priceGrupoGaleno', id: 'galeno' + idGaleno },
-      { variable: 'precioMedifeAdultos', id: 'medife' + idAdultosMedife },
+      { variable: 'precioMedifeAdultos', id: idAdultosMedife },
       { variable: 'precioMedifeHijo0a1', id: 'medife' + tipo_IngresoPDMI + 'HIJO0a1' },
       { variable: 'precioMedifeHijo0a20', id: 'medife' + tipo_IngresoPDMI + 'HIJO2a20' },
       { variable: 'precioMedifeHijo0a25', id: 'medife' + tipo_IngresoPDMI + 'HIJO25' },
@@ -189,52 +189,55 @@ async function fetchPrices() {
       { variable: 'precioAvalianHijo2', id:  IdsAvalian[3] },
       { variable: 'precioAvalianHijo3', id:  IdsAvalian[4] },
       { variable: 'precioAvalianHijo25', id:  IdsAvalian[5] },
-      { variable: 'precioTitularRas', id: idsCristalyRas[0] },
-      { variable: 'precioConyugeRas', id: idsCristalyRas[1] },
-      { variable: 'precioHijo1Ras', id: idsCristalyRas[2] },
-      { variable: 'precioHijo2Ras', id: idsCristalyRas[3] },
-      { variable: 'precioHijo3Ras', id: idsCristalyRas[4] },
-      { variable: 'precioTitularCristal', id:  idsCristalyRas[5] },
-      { variable: 'precioConyugeCristal', id:  idsCristalyRas[6] },
-      { variable: 'precioHijo1Cristal', id:  idsCristalyRas[7] },
-      { variable: 'precioHijo2Cristal', id:  idsCristalyRas[8] },
-      { variable: 'precioHijo3Cristal', id:  idsCristalyRas[9] },
-      { variable: 'precioLuispasteurAdultos', id:  idsLuisPasteur[0] },
-      { variable: 'precioLuispasteurNieto', id:  idsLuisPasteur[1] },
-      { variable: 'precioLuispasteurAdicional', id:  idsLuisPasteur[2] },
-      { variable: 'precioLuispasteurHijo', id:  idsLuisPasteur[3] },
-      { variable: 'precioAsmepriv', id:  idsAsmepriv[0] },
-      { variable: 'precioAdmenorUno', id:  idsAsmepriv[1] },
-      { variable: 'precioAsmeprivHijoHasta21', id:  idsAsmepriv[2] },
-      { variable: 'precioAsmeprivRecargoHijo21a29', id:  idsAsmepriv[3] },
-      { variable: 'precioAsmeprivModuloMat', id:  idsAsmepriv[4] },
-      { variable: 'precioBayresAdultos', id:  idsBayresPlan[0] },
-      { variable: 'precioBayresHijoHasta25', id:  idsBayresPlan[1] },
-      { variable: 'precioBayresAd18a49', id:  idsBayresPlan[2] },
-      { variable: 'precioBayresJovenSinMaternidad', id:  idsBayresPlan[3] },
-      { variable: 'precioBayresInd18a29', id:  idsBayresPlan[4] },
-      { variable: 'precioHominis', id:  idsHominis }      
+      // { variable: 'precioTitularRas', id: idsCristalyRas[0] },
+      // { variable: 'precioConyugeRas', id: idsCristalyRas[1] },
+      // { variable: 'precioHijo1Ras', id: idsCristalyRas[2] },
+      // { variable: 'precioHijo2Ras', id: idsCristalyRas[3] },
+      // { variable: 'precioHijo3Ras', id: idsCristalyRas[4] },
+      // { variable: 'precioTitularCristal', id:  idsCristalyRas[5] },
+      // { variable: 'precioConyugeCristal', id:  idsCristalyRas[6] },
+      // { variable: 'precioHijo1Cristal', id:  idsCristalyRas[7] },
+      // { variable: 'precioHijo2Cristal', id:  idsCristalyRas[8] },
+      // { variable: 'precioHijo3Cristal', id:  idsCristalyRas[9] },
+      // { variable: 'precioLuispasteurAdultos', id:  idsLuisPasteur[0] },
+      // { variable: 'precioLuispasteurNieto', id:  idsLuisPasteur[1] },
+      // { variable: 'precioLuispasteurAdicional', id:  idsLuisPasteur[2] },
+      // { variable: 'precioLuispasteurHijo', id:  idsLuisPasteur[3] },
+      // { variable: 'precioAsmepriv', id:  idsAsmepriv[0] },
+      // { variable: 'precioAdmenorUno', id:  idsAsmepriv[1] },
+      // { variable: 'precioAsmeprivHijoHasta21', id:  idsAsmepriv[2] },
+      // { variable: 'precioAsmeprivRecargoHijo21a29', id:  idsAsmepriv[3] },
+      // { variable: 'precioAsmeprivModuloMat', id:  idsAsmepriv[4] },
+      // { variable: 'precioBayresAdultos', id:  idsBayresPlan[0] },
+      // { variable: 'precioBayresHijoHasta25', id:  idsBayresPlan[1] },
+      // { variable: 'precioBayresAd18a49', id:  idsBayresPlan[2] },
+      // { variable: 'precioBayresJovenSinMaternidad', id:  idsBayresPlan[3] },
+      // { variable: 'precioBayresInd18a29', id:  idsBayresPlan[4] },
+      // { variable: 'precioHominis', id:  idsHominis }      
        ];
 
 
   const promises = productQueries.map(async (query) => {
-      // console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
+      console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
       try {
           const result = await fetchProductPrice(query.id);
+          // console.log(query.id,' :',result )
           return { [query.variable]: result };
       } catch (error) {
           // console.error(`Error fetching price for ${query.id}:`, error);
+          console.log(query.id,' :',error )
           return { [query.variable]: null };
       }
   });
 
   const results = await Promise.all(promises);
   results.forEach((result) => Object.assign(prices, result));
-
   return prices;
 }
 
    const prices = await fetchPrices();
+   console.log('prices',prices);
+
 // console.log(' prices ' ,prices)
 
 // console.log('aporte_OS  : ' + aporte_OS);
@@ -251,130 +254,131 @@ async function fetchPrices() {
 // console.log('coeficiente  : '+ buscar_mi_coeficiente('OMINT'));
 // console.log('group  : '+ group);
 
-async function buscarPrecio(id: string) {
-    try {
-        const doc = await PreciosModel.findOne({ id });
+// async function buscarPrecio(id: string) {
+//     try {
+//         const doc = await PreciosModel.findOne({ id });
 
-        if (!doc) {
-            // console.log(`⚠️ No se encontró el documento con id: ${id}`);
-            return { precios: 0 }; // Valor por defecto
-        }
+//         if (!doc) {
+//             // console.log(`⚠️ No se encontró el documento con id: ${id}`);
+//             return { precios: 0 }; // Valor por defecto
+//         }
 
-        return doc;
-    } catch (error) {
-        // console.error(`❌ Error al buscar precios con id ${id}:`, error);
-        return { precios: 0 };     // Valor por defecto para evitar que falle
-    }
-}
+//         return doc;
+//     } catch (error) {
+//         // console.error(`❌ Error al buscar precios con id ${id}:`, error);
+//         return { precios: 0 };     // Valor por defecto para evitar que falle
+//     }
+// }
 
-prices.precioPrevencion = await buscarPrecio(idPrevencion);
-prices.precioDoctoredGrupo = await buscarPrecio(IdDoctored[0]);
-prices.precioDoctoredHijo3 = await buscarPrecio(IdDoctored[1]);
-prices.precioDoctoredAd = await buscarPrecio(IdDoctored[2]);
+// prices.precioPrevencion = await buscarPrecio(idPrevencion);
+// prices.precioDoctoredGrupo = await buscarPrecio(IdDoctored[0]);
+// prices.precioDoctoredHijo3 = await buscarPrecio(IdDoctored[1]);
+// prices.precioDoctoredAd = await buscarPrecio(IdDoctored[2]);
 
-prices.precioMedifeAdultos = await buscarPrecio(idAdultosMedife);
-prices.precioMedifeHijo0a1 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO0a1');
-prices.precioMedifeHijo0a20 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO2a20');
-prices.precioMedifeHijo0a25 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO25');
+// prices.precioMedifeAdultos = await buscarPrecio(idAdultosMedife);
+// prices.precioMedifeHijo0a1 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO0a1');
+// prices.precioMedifeHijo0a20 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO2a20');
+// prices.precioMedifeHijo0a25 = await buscarPrecio('medife'+tipo_IngresoPDMI+'HIJO25');
 
-prices.precioAvalianTitular = await buscarPrecio(IdsAvalian[0]);
-prices.precioAvalianConyuge = await buscarPrecio(IdsAvalian[1]);
-prices.precioAvalianHijo1 = await buscarPrecio(IdsAvalian[2]);
-prices.precioAvalianHijo2 = await buscarPrecio(IdsAvalian[3]);
-prices.precioAvalianHijo3 = await buscarPrecio(IdsAvalian[4]);
-prices.precioAvalianHijo25 = await buscarPrecio(IdsAvalian[5]);
+// prices.precioAvalianTitular = await buscarPrecio(IdsAvalian[0]);
+// prices.precioAvalianConyuge = await buscarPrecio(IdsAvalian[1]);
+// prices.precioAvalianHijo1 = await buscarPrecio(IdsAvalian[2]);
+// prices.precioAvalianHijo2 = await buscarPrecio(IdsAvalian[3]);
+// prices.precioAvalianHijo3 = await buscarPrecio(IdsAvalian[4]);
+// prices.precioAvalianHijo25 = await buscarPrecio(IdsAvalian[5]);
 
-prices.precioTitularRas = await buscarPrecio(idsCristalyRas[0]);
-if(group == 3 || group == 4) {
-    prices.precioConyugeRas = await buscarPrecio(idsCristalyRas[1]);
-}
-prices.precioHijo3Ras = await buscarPrecio(idsCristalyRas[2]);
-prices.precioHijo2Ras = await buscarPrecio(idsCristalyRas[3]);
-prices.precioHijo1Ras = await buscarPrecio(idsCristalyRas[4]);
+// prices.precioTitularRas = await buscarPrecio(idsCristalyRas[0]);
+// if(group == 3 || group == 4) {
+//     prices.precioConyugeRas = await buscarPrecio(idsCristalyRas[1]);
+// }
+// prices.precioHijo3Ras = await buscarPrecio(idsCristalyRas[2]);
+// prices.precioHijo2Ras = await buscarPrecio(idsCristalyRas[3]);
+// prices.precioHijo1Ras = await buscarPrecio(idsCristalyRas[4]);
 
-prices.precioTitularCristal = await buscarPrecio(idsCristalyRas[5]);
-if(group == 3 || group == 4) {
-    prices.precioConyugeCristal = await buscarPrecio(idsCristalyRas[6]);
-}
-prices.precioHijo3Cristal = await buscarPrecio(idsCristalyRas[7]);
-prices.precioHijo2Cristal = await buscarPrecio(idsCristalyRas[8]);
-prices.precioHijo1Cristal = await buscarPrecio(idsCristalyRas[9]);
+// prices.precioTitularCristal = await buscarPrecio(idsCristalyRas[5]);
+// if(group == 3 || group == 4) {
+//     prices.precioConyugeCristal = await buscarPrecio(idsCristalyRas[6]);
+// }
+// prices.precioHijo3Cristal = await buscarPrecio(idsCristalyRas[7]);
+// prices.precioHijo2Cristal = await buscarPrecio(idsCristalyRas[8]);
+// prices.precioHijo1Cristal = await buscarPrecio(idsCristalyRas[9]);
 
-prices.precioLuispasteurAdultos = await buscarPrecio(idsLuisPasteur[0]);
-prices.precioLuispasteurNieto = await buscarPrecio(idsLuisPasteur[1]);
-prices.precioLuispasteurAdicional = await buscarPrecio(idsLuisPasteur[2]);
-prices.precioLuispasteurHijo = await buscarPrecio(idsLuisPasteur[3]);
+// prices.precioLuispasteurAdultos = await buscarPrecio(idsLuisPasteur[0]);
+// prices.precioLuispasteurNieto = await buscarPrecio(idsLuisPasteur[1]);
+// prices.precioLuispasteurAdicional = await buscarPrecio(idsLuisPasteur[2]);
+// prices.precioLuispasteurHijo = await buscarPrecio(idsLuisPasteur[3]);
 
-prices.precioAsmepriv = await buscarPrecio(idsAsmepriv[0]);
-prices.precioAdmenorUno = await buscarPrecio(idsAsmepriv[1]);
-prices.precioAsmeprivHijoHasta21 = await buscarPrecio(idsAsmepriv[2]);
-prices.precioAsmeprivRecargoHijo21a29 = await buscarPrecio(idsAsmepriv[3]);
+// prices.precioAsmepriv = await buscarPrecio(idsAsmepriv[0]);
+// prices.precioAdmenorUno = await buscarPrecio(idsAsmepriv[1]);
+// prices.precioAsmeprivHijoHasta21 = await buscarPrecio(idsAsmepriv[2]);
+// prices.precioAsmeprivRecargoHijo21a29 = await buscarPrecio(idsAsmepriv[3]);
 
-prices.precioBayresAdultos = await buscarPrecio(idsBayresPlan[0]);
-prices.precioBayresHijoHasta25 = await buscarPrecio(idsBayresPlan[1]);
-prices.precioBayresAd18a49 = await buscarPrecio(idsBayresPlan[2]);
-prices.precioBayresJovenSinMaternidad = await buscarPrecio(idsBayresPlan[3]);
-prices.precioBayresInd18a29 = await buscarPrecio(idsBayresPlan[4]);
+// prices.precioBayresAdultos = await buscarPrecio(idsBayresPlan[0]);
+// prices.precioBayresHijoHasta25 = await buscarPrecio(idsBayresPlan[1]);
+// prices.precioBayresAd18a49 = await buscarPrecio(idsBayresPlan[2]);
+// prices.precioBayresJovenSinMaternidad = await buscarPrecio(idsBayresPlan[3]);
+// prices.precioBayresInd18a29 = await buscarPrecio(idsBayresPlan[4]);
 
-prices.precioHominis = await buscarPrecio(idsHominis);
+// prices.precioHominis = await buscarPrecio(idsHominis);
 
-async function cargarPrecios(lista: string[][], prices: { [x: string]: (Document<unknown, {}, Precios, {}, DefaultSchemaOptions> & Precios & Required<{ _id: string; }> & { __v: number; }) | { precios: number; }; }) {
-    for (const [nombre, id] of lista) {
-        prices[nombre] = await buscarPrecio(id);
-    }
-}
-const listaDePrecios = [
-    ["precioPrevencion", idPrevencion],
+// async function cargarPrecios(lista: string[][], prices: { [x: string]: (Document<unknown, {}, Precios, {}, DefaultSchemaOptions> & Precios & Required<{ _id: string; }> & { __v: number; }) | { precios: number; }; }) {
+//     for (const [nombre, id] of lista) {
+//       console.log('lista',lista)
+//         prices[nombre] = await buscarPrecio(id);
+//     }
+// }
+// const listaDePrecios = [
+//     ["precioPrevencion", idPrevencion],
 
-    ["precioDoctoredGrupo", IdDoctored[0]],
-    ["precioDoctoredHijo3", IdDoctored[1]],
-    ["precioDoctoredAd", IdDoctored[2]],
+//     ["precioDoctoredGrupo", IdDoctored[0]],
+//     ["precioDoctoredHijo3", IdDoctored[1]],
+//     ["precioDoctoredAd", IdDoctored[2]],
 
-    ["precioMedifeAdultos", idAdultosMedife],
-    ["precioMedifeHijo0a1", `medife${tipo_IngresoPDMI}HIJO0a1`],
-    ["precioMedifeHijo0a20", `medife${tipo_IngresoPDMI}HIJO2a20`],
-    ["precioMedifeHijo0a25", `medife${tipo_IngresoPDMI}HIJO25`],
+//     ["precioMedifeAdultos", idAdultosMedife],
+//     ["precioMedifeHijo0a1", `medife${tipo_IngresoPDMI}HIJO0a1`],
+//     ["precioMedifeHijo0a20", `medife${tipo_IngresoPDMI}HIJO2a20`],
+//     ["precioMedifeHijo0a25", `medife${tipo_IngresoPDMI}HIJO25`],
 
-    ["precioAvalianTitular", IdsAvalian[0]],
-    ["precioAvalianConyuge", IdsAvalian[1]],
-    ["precioAvalianHijo1", IdsAvalian[2]],
-    ["precioAvalianHijo2", IdsAvalian[3]],
-    ["precioAvalianHijo3", IdsAvalian[4]],
-    ["precioAvalianHijo25", IdsAvalian[5]],
+//     ["precioAvalianTitular", IdsAvalian[0]],
+//     ["precioAvalianConyuge", IdsAvalian[1]],
+//     ["precioAvalianHijo1", IdsAvalian[2]],
+//     ["precioAvalianHijo2", IdsAvalian[3]],
+//     ["precioAvalianHijo3", IdsAvalian[4]],
+//     ["precioAvalianHijo25", IdsAvalian[5]],
 
-    ["precioTitularRas", idsCristalyRas[0]],
-    ["precioConyugeRas", idsCristalyRas[1]],
-    ["precioHijo1Ras", idsCristalyRas[4]],
-    ["precioHijo2Ras", idsCristalyRas[3]],
-    ["precioHijo3Ras", idsCristalyRas[2]],
+    // ["precioTitularRas", idsCristalyRas[0]],
+    // ["precioConyugeRas", idsCristalyRas[1]],
+    // ["precioHijo1Ras", idsCristalyRas[4]],
+    // ["precioHijo2Ras", idsCristalyRas[3]],
+    // ["precioHijo3Ras", idsCristalyRas[2]],
 
-    ["precioTitularCristal", idsCristalyRas[5]],
-    ["precioConyugeCristal", idsCristalyRas[6]],
-    ["precioHijo1Cristal", idsCristalyRas[9]],
-    ["precioHijo2Cristal", idsCristalyRas[8]],
-    ["precioHijo3Cristal", idsCristalyRas[7]],
+    // ["precioTitularCristal", idsCristalyRas[5]],
+    // ["precioConyugeCristal", idsCristalyRas[6]],
+    // ["precioHijo1Cristal", idsCristalyRas[9]],
+    // ["precioHijo2Cristal", idsCristalyRas[8]],
+    // ["precioHijo3Cristal", idsCristalyRas[7]],
 
-    ["precioLuispasteurAdultos", idsLuisPasteur[0]],
-    ["precioLuispasteurNieto", idsLuisPasteur[1]],
-    ["precioLuispasteurAdicional", idsLuisPasteur[2]],
-    ["precioLuispasteurHijo", idsLuisPasteur[3]],
+    // ["precioLuispasteurAdultos", idsLuisPasteur[0]],
+    // ["precioLuispasteurNieto", idsLuisPasteur[1]],
+    // ["precioLuispasteurAdicional", idsLuisPasteur[2]],
+    // ["precioLuispasteurHijo", idsLuisPasteur[3]],
 
-    ["precioAsmepriv", idsAsmepriv[0]],
-    ["precioAdmenorUno", idsAsmepriv[1]],
-    ["precioAsmeprivHijoHasta21", idsAsmepriv[2]],
-    ["precioAsmeprivRecargoHijo21a29", idsAsmepriv[3]],
+    // ["precioAsmepriv", idsAsmepriv[0]],
+    // ["precioAdmenorUno", idsAsmepriv[1]],
+    // ["precioAsmeprivHijoHasta21", idsAsmepriv[2]],
+    // ["precioAsmeprivRecargoHijo21a29", idsAsmepriv[3]],
 
-    ["precioBayresAdultos", idsBayresPlan[0]],
-    ["precioBayresHijoHasta25", idsBayresPlan[1]],
-    ["precioBayresAd18a49", idsBayresPlan[2]],
-    ["precioBayresJovenSinMaternidad", idsBayresPlan[3]],
-    ["precioBayresInd18a29", idsBayresPlan[4]],
+    // ["precioBayresAdultos", idsBayresPlan[0]],
+    // ["precioBayresHijoHasta25", idsBayresPlan[1]],
+    // ["precioBayresAd18a49", idsBayresPlan[2]],
+    // ["precioBayresJovenSinMaternidad", idsBayresPlan[3]],
+    // ["precioBayresInd18a29", idsBayresPlan[4]],
 
-    ["precioHominis", idsHominis]
-];
+    // ["precioHominis", idsHominis]
+// ];
 const precios = {};
 
-await cargarPrecios(listaDePrecios, precios);
+// await cargarPrecios(listaDePrecios, precios);
 
 
 // <! -----------------------------ID PREMEDIC START---------------------------------------------------->
@@ -394,11 +398,11 @@ let valor_Doctored:any=[];
 let valor_Prevencion:any=[];
 let valor_Avalian:any=[];
 let valor_Medife:any=[];
-let valor_Ras:any=[];
-let valor_Cristal:any=[];
-let valor_Asmepriv:any=[];
-let valor_LuisPasteur:any=[];
-let valor_BayresPlan:any=[];
+// let valor_Ras:any=[];
+// let valor_Cristal:any=[];
+// let valor_Asmepriv:any=[];
+// let valor_LuisPasteur:any=[];
+// let valor_BayresPlan:any=[];
 if(hayPreciosValidos([prices.precio_titular_Omint.precios,
   prices.precio_conyuge_Omint.precios,
   prices.precio_hijo1_Omint.precios,
@@ -542,12 +546,16 @@ console.log('valor_Avalian ',valor_Avalian);
 // }
 
 
-if (hayPreciosValidos([prices.precioMedifeAdultos, prices.precioMedifeHijo0a1, prices.precioMedifeHijo0a20, prices.precioMedifeHijo0a25 ])) {
 
-const argsMedife = [aporte_OS,buscar_mi_coeficiente('Medife'),grupo[3],prices.precioMedifeAdultos, prices.precioMedifeHijo0a20];
+
+if (hayPreciosValidos([prices.precioMedifeAdultos.precios,  prices.precioMedifeHijo0a20.precios ])) {
+console.log('prices.precioMedifeAdultos.precios : ',prices.precioMedifeAdultos.precios);
+console.log('prices.precioMedifeHijo0a20.precios : ',prices.precioMedifeHijo0a20.precios);
+
+const argsMedife = [aporte_OS,grupo[3],prices.precioMedifeAdultos.precios, prices.precioMedifeHijo0a20.precios,buscar_mi_coeficiente('Medife')];
 console.log('argsMedife :',argsMedife);
   valor_Medife = functions.valor_Medife(...argsMedife);
-console.log('valor_Medife ',argsMedife);
+console.log('valor_Medife ',valor_Medife);
 }
 
 
