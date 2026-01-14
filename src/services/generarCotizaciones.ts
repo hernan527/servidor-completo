@@ -26,10 +26,15 @@ export const procesarTodo = async (fechaManual?: string) => {
 const promesas = filas.map(async (fila) => {
     return new Promise((resolve) => {
         // Seguro de vida: Si en 10 segundos no respondió, cancelamos esa fila
-        const timeout = setTimeout(() => {
-            console.log(`⏱️ Timeout en ID: ${fila.id}`);
-            resolve(null);
-        }, 10000);
+ const timeout = setTimeout(() => {
+    console.log(`⏱️ Timeout en ID: ${fila.id}, saltando.`);
+    // DEVOLVEMOS UN OBJETO IGUAL, pero con error
+    resolve({ 
+        id: fila.id, 
+        respuesta: { error: "Timeout cronico" }, 
+        updated_at: new Date().toISOString() 
+    });
+}, 20000); // 20 segundos
 
         const mockRes = {
             json: (data: any) => { clearTimeout(timeout); resolve({ id: fila.id, respuesta: data, updated_at: new Date().toISOString() }); },
@@ -52,10 +57,14 @@ const promesas = filas.map(async (fila) => {
                 console.error(`❌ Error interno calcularPrecio ID ${fila.id}`);
                 resolve(null);
             });
-        } catch (e) {
-            clearTimeout(timeout);
-            resolve(null);
-        }
+        } catch (err) {
+    console.error(`❌ Error fatal en ID ${fila.id}:`, err);
+    resolve({ 
+        id: fila.id, 
+        respuesta: { error: "ERROR_GET_ITEMS_CRASH" }, 
+        updated_at: new Date().toISOString() 
+    });
+}
     });
 });
 const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
