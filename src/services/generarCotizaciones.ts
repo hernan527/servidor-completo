@@ -5,7 +5,7 @@ export const procesarTodo = async (fechaManual?: string) => {
   const FECHA_CORTE = fechaManual ? new Date(fechaManual).toISOString() : new Date().toISOString(); 
   
   console.log(`⏳ Iniciando sincronización veloz.`);
-  const TRAMO_SIZE = 10; // Bajamos el lote a 50 para no saturar la memoria
+  const TRAMO_SIZE = 5; // Bajamos el lote a 50 para no saturar la memoria
   let totalProcesadas = 0;
   let continuar = true;
 
@@ -64,21 +64,23 @@ const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
 
     if (resultadosBatch.length > 0) {
         // Ejecutamos el upsert UNA sola vez y capturamos el error
-        const { error: upsertError } = await supabase
-            .from('cotizaciones_maestras')
-            .upsert(resultadosBatch);
+       
 
-        if (upsertError) {
-            console.error("❌ ERROR DE SUPABASE:", upsertError.message, upsertError.details);
-            // Si hay error en el lote, podrías decidir si frenar o seguir
-        } else {
-            totalProcesadas += resultadosBatch.length;
-            console.log(`✅ [OK] Se subieron ${resultadosBatch.length} registros. Total acumulado: ${totalProcesadas}`);
-        }
-    } else {
-        console.warn("⚠️ El lote resultó vacío después de filtrar nulos.");
-    }
+       const { data: confirmacion, error: upsertError } = await supabase
+  .from('cotizaciones_maestras')
+  .upsert(resultadosBatch)
+  .select('id'); // Pedimos que nos devuelva los IDs guardados
+
+if (upsertError) {
+  console.error("❌ ERROR REAL DE SUPABASE:", upsertError.message);
+} else if (confirmacion && confirmacion.length > 0) {
+  totalProcesadas += confirmacion.length;
+  console.log(`✅ [CONFIRMADO] Se guardaron ${confirmacion.length} filas reales en Supabase. Total: ${totalProcesadas}`);
+} else {
+  console.warn("⚠️ Supabase devolvió éxito pero 0 filas guardadas. Revisar RLS o Clave Primaria.");
+}
 } // Aquí cierra el while
 
 console.log(`🏁 Proceso finalizado. Total de registros actualizados: ${totalProcesadas}`);
+};
 };
