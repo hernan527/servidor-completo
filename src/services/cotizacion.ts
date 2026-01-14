@@ -71,7 +71,7 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
 };
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-console.log(' INICIANDO COTIZACION ')
+// console.log(' INICIANDO COTIZACION ')
 // console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
@@ -657,7 +657,7 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        }
        return true;
        });
-  console.log(' FINALIZANDO COTIZACION ')
+  // console.log(' FINALIZANDO COTIZACION ')
 
 // console.log('concatenarPrecios   :');
 // console.log(concatenarPrecios);

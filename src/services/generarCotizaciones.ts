@@ -23,47 +23,62 @@ export const procesarTodo = async (fechaManual?: string) => {
     }
 
     // --- MAGIA: Procesamos los 50 registros EN PARALELO ---
-    const promesas = filas.map(async (fila) => {
-      try {
-        const resultado = await new Promise((resolve) => {
-          const mockRes = { 
-            json: (data: any) => resolve(data), 
-            status: () => mockRes, 
-            send: (data: any) => resolve(data) 
-          };
-          
-          calcularPrecio({
-            body: {
-              group: String(fila.group),
-              edad_1: Number(fila.edad_1),
-              edad_2: Number(fila.edad_2 || 0),
-              numkids: Number(fila.hijos),
-              tipo: fila.tipo,
-              empresa_prepaga: 'todas'
-            }
-          } as any, mockRes as any);
-        });
+const promesas = filas.map(async (fila) => {
+    return new Promise((resolve) => {
+        // Seguro de vida: Si en 10 segundos no respondió, cancelamos esa fila
+        const timeout = setTimeout(() => {
+            console.log(`⏱️ Timeout en ID: ${fila.id}`);
+            resolve(null);
+        }, 10000);
 
-        return {
-          id: fila.id,
-          respuesta: resultado,
-          updated_at: new Date().toISOString() 
+        const mockRes = {
+            json: (data: any) => { clearTimeout(timeout); resolve({ id: fila.id, respuesta: data, updated_at: new Date().toISOString() }); },
+            send: (data: any) => { clearTimeout(timeout); resolve({ id: fila.id, respuesta: data, updated_at: new Date().toISOString() }); },
+            status: function() { return this; }
         };
-      } catch (err) {
-        console.error(`⚠️ Error en fila ${fila.id}`);
-        return null;
-      }
+
+        try {
+            calcularPrecio({
+                body: {
+                    group: String(fila.group),
+                    edad_1: Number(fila.edad_1),
+                    edad_2: Number(fila.edad_2 || 0),
+                    numkids: Number(fila.hijos),
+                    tipo: fila.tipo,
+                    empresa_prepaga: 'todas'
+                }
+            } as any, mockRes as any).catch(err => {
+                clearTimeout(timeout);
+                console.error(`❌ Error interno calcularPrecio ID ${fila.id}`);
+                resolve(null);
+            });
+        } catch (e) {
+            clearTimeout(timeout);
+            resolve(null);
+        }
     });
+});
+const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
 
-    // Esperamos a que los 50 terminen de calcularse (tardará ~4-5 segundos en total por lote)
-    const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
+    console.log(`📦 Lote calculado. Intentando subir ${resultadosBatch.length} registros a Supabase...`);
 
-    // Guardamos los 50 en Supabase de una sola vez
     if (resultadosBatch.length > 0) {
-      await supabase.from('cotizaciones_maestras').upsert(resultadosBatch);
-      totalProcesadas += resultadosBatch.length;
-      console.log(`🚀 Procesadas: ${totalProcesadas} de 7000...`);
+        // Ejecutamos el upsert UNA sola vez y capturamos el error
+        const { error: upsertError } = await supabase
+            .from('cotizaciones_maestras')
+            .upsert(resultadosBatch);
+
+        if (upsertError) {
+            console.error("❌ ERROR DE SUPABASE:", upsertError.message, upsertError.details);
+            // Si hay error en el lote, podrías decidir si frenar o seguir
+        } else {
+            totalProcesadas += resultadosBatch.length;
+            console.log(`✅ [OK] Se subieron ${resultadosBatch.length} registros. Total acumulado: ${totalProcesadas}`);
+        }
+    } else {
+        console.warn("⚠️ El lote resultó vacío después de filtrar nulos.");
     }
-  }
-  console.log(`🏁 Proceso finalizado.`);
+} // Aquí cierra el while
+
+console.log(`🏁 Proceso finalizado. Total de registros actualizados: ${totalProcesadas}`);
 };
