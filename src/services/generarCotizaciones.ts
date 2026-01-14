@@ -5,7 +5,7 @@ export const procesarTodo = async (fechaManual?: string) => {
   const FECHA_CORTE = fechaManual ? new Date(fechaManual).toISOString() : new Date().toISOString(); 
   
   console.log(`⏳ Iniciando sincronización veloz.`);
-  const TRAMO_SIZE = 50; // Bajamos el lote a 50 para no saturar la memoria
+  const TRAMO_SIZE = 10; // Bajamos el lote a 50 para no saturar la memoria
   let totalProcesadas = 0;
   let continuar = true;
 
