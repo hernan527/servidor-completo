@@ -12,7 +12,7 @@ export function valor_Avalian(
     Hijo3,           
     numKids          
 ) {
-    console.log("--- INICIO CÁLCULO AVALIAN ---");
+    // console.log("--- INICIO CÁLCULO AVALIAN ---");
     let array = [];
     let tipo_IngresoPDMI = aporteOS[0].trim(); 
     
@@ -31,14 +31,14 @@ export function valor_Avalian(
     let bonificacion_forma_de_pago = 0.10; 
     let descuento_total_porcentaje = bonificacion_promocion + bonificacion_forma_de_pago;
 
-    console.log(`Tipo Ingreso: ${tipo_IngresoPDMI} | Desc. Promoción: ${bonificacion_promocion} | Desc. Pago: ${bonificacion_forma_de_pago}`);
+    // console.log(`Tipo Ingreso: ${tipo_IngresoPDMI} | Desc. Promoción: ${bonificacion_promocion} | Desc. Pago: ${bonificacion_forma_de_pago}`);
 
     // 2. Cálculo de Descuento Obra Social
     let descOS = functions.calculodescOS(
         aporteOS[0], aporteOS[2], aporteOS[3], 
         coeficiente, aporteOS[4], aporteOS[5], aporteOS[1]
     );
-    console.log("Descuento OS calculado:", descOS);
+    // console.log("Descuento OS calculado:", descOS);
 
     // 3. Sumar el Grupo Familiar (Precios Brutos)
     let preciosBrutos = { ...Titular };
@@ -55,7 +55,7 @@ export function valor_Avalian(
             preciosBrutos = sumObjects(preciosBrutos, Hijo3, cantidadHijosH3);
         }
     }
-    console.log("Precios Brutos Totales por plan:", preciosBrutos);
+    // console.log("Precios Brutos Totales por plan:", preciosBrutos);
 
     // 4. Bucle de Cálculo Final
     for (let planId in preciosBrutos) {
@@ -73,7 +73,7 @@ export function valor_Avalian(
         // D. Restar Aportes Obra Social
         let precioFinal = functions.final(tipo_IngresoPDMI, descOS, precioAntesDeOS);
 
-        console.log(`Plan: ${planId} | Bruto: ${valorBruto} | Subtotal: ${precioAntesDeOS.toFixed(2)} | Final: ${precioFinal.toFixed(2)}`);
+        // console.log(`Plan: ${planId} | Bruto: ${valorBruto} | Subtotal: ${precioAntesDeOS.toFixed(2)} | Final: ${precioFinal.toFixed(2)}`);
 
         array.push({
             item_id: planId,
@@ -84,7 +84,7 @@ export function valor_Avalian(
         });
     }
 
-    console.log("--- FIN CÁLCULO AVALIAN ---");
+    // console.log("--- FIN CÁLCULO AVALIAN ---");
     return array;
 }
 

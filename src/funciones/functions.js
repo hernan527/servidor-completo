@@ -20,7 +20,7 @@
 			  ...plan._doc,
 			  ...matchingPrecio,
 			};
-			// console.log(combinedPlan)
+			// // console.log(combinedPlan)
 	
 			// Agrega el objeto combinado al array resultado
 			combinedArray.push(combinedPlan);
@@ -103,7 +103,7 @@
 		} else {
 			deduccionOS = '';
 		};
-		console.log('deduccionOS' ,deduccionOS)
+		// console.log('deduccionOS' ,deduccionOS)
 	}	return [deduccionOS,tipo_IngresoPDMI]
 	}
 	
@@ -186,7 +186,11 @@
 		
 	export function suprasSalud(plan_nombre,otrosBenPrecios,grupoFam){
 		let otrosBen = 0;
-		
+		let busqueda = grupoFam -1 ;
+		otrosBen + otrosBenPrecios[busqueda]['SSPRO'];
+		otrosBen + otrosBenPrecios[busqueda]['SSOD'];
+		otrosBen + otrosBenPrecios[busqueda]['SSAC'];
+		otrosBen + otrosBenPrecios[busqueda]['SUF'];
 			otrosBen = 0;
 			if (plan_nombre.includes('B')) {
 				otrosBen = otrosBen + otrosBenPrecios[grupoFam - 1]['SSPRO'];

@@ -16,8 +16,24 @@ export const  calcularPrecio = async (req: Request, res: Response) => {
  try{
 const formCotizar = req.body;
 const {group,empresa_prepaga,edad_1,edad_2,numkids,plan_type,tipo,agree,aporteOS,sueldo,aporte,monoadic,cantAport,afinidad,bonAfinidad,supras,segvida,segvida1,region}=formCotizar;
-// console.log('formCotizar  : ');console.log(formCotizar);
+// console.log('formCotizar  : ');// console.log(formCotizar);
+let definirPrepaga = 'todas';
+if(empresa_prepaga ){
+  definirPrepaga = empresa_prepaga;
+ } else {
+  definirPrepaga = 'todas';
+};
 
+interface PlanResultado {
+    item_id: string;
+    name: string;
+    precio: number;
+    promoPorcentaje: number;
+    promoDescuento: number;
+    valorLista: number;
+    aporteOS: (number | string)[]; // Indica que el array contiene números o letras
+}
+let concatenarPrecios: PlanResultado[] = [];
 const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: string) => {
 // console.log('calcularGrupocorriendo' )
   let edad1 = edad_1;
@@ -55,7 +71,8 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
 };
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-// console.log('grupo ', grupo)
+console.log(' INICIANDO COTIZACION ')
+console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
   // console.log('beneficiariosF184 ', beneficiariosF184)
@@ -151,7 +168,7 @@ const coeficiente = empresasConCoeficientes.find(empresa => empresa[type]);
 if (coeficiente) {
 return coeficiente  
 } else {
-console.log(`No se encontró la empresa ${type}.`);
+// console.log(`No se encontró la empresa ${type}.`);
 }
 
 }
@@ -218,14 +235,14 @@ async function fetchPrices() {
 
 
   const promises = productQueries.map(async (query) => {
-      console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
+      // console.log(`Fetching price for ${query.variable} with ID: ${query.id}`);
       try {
           const result = await fetchProductPrice(query.id);
           // console.log(query.id,' :',result )
           return { [query.variable]: result };
       } catch (error) {
           // console.error(`Error fetching price for ${query.id}:`, error);
-          console.log(query.id,' :',error )
+          // console.log(query.id,' :',error )
           return { [query.variable]: null };
       }
   });
@@ -236,7 +253,7 @@ async function fetchPrices() {
 }
 
    const prices = await fetchPrices();
-   console.log('prices',prices);
+   // console.log('prices',prices);
 
 // console.log(' prices ' ,prices)
 
@@ -259,7 +276,7 @@ async function fetchPrices() {
 //         const doc = await PreciosModel.findOne({ id });
 
 //         if (!doc) {
-//             // console.log(`⚠️ No se encontró el documento con id: ${id}`);
+//             console.log(`⚠️ No se encontró el documento con id: ${id}`);
 //             return { precios: 0 }; // Valor por defecto
 //         }
 
@@ -323,7 +340,7 @@ async function fetchPrices() {
 
 // async function cargarPrecios(lista: string[][], prices: { [x: string]: (Document<unknown, {}, Precios, {}, DefaultSchemaOptions> & Precios & Required<{ _id: string; }> & { __v: number; }) | { precios: number; }; }) {
 //     for (const [nombre, id] of lista) {
-//       console.log('lista',lista)
+//       // console.log('lista',lista)
 //         prices[nombre] = await buscarPrecio(id);
 //     }
 // }
@@ -383,7 +400,7 @@ const precios = {};
 
 // <! -----------------------------ID PREMEDIC START---------------------------------------------------->
 function hayPreciosValidos(precios: any[]): boolean {
-  console.log("Verificando precios:", precios); // Para depuración
+  // // console.log("Verificando precios:", precios); // Para depuración
   
   // Verificamos que los precios no sean null ni undefined
   return precios.every(p => p !== null && p !== undefined);
@@ -406,27 +423,30 @@ let valor_Medife:any=[];
 if(hayPreciosValidos([prices.precio_titular_Omint.precios,
   prices.precio_conyuge_Omint.precios,
   prices.precio_hijo1_Omint.precios,
-  prices.precio_hijo2_Omint.precios])) {
+  prices.precio_hijo2_Omint.precios]) && (empresa_prepaga === 'todas' || empresa_prepaga === 'omint')) {
+    
     const argsOmint = [aporte_OS,edad_2,numHijos,numhijo2,prices.precio_titular_Omint.precios,prices.precio_conyuge_Omint.precios,prices.precio_hijo1_Omint.precios,prices.precio_hijo2_Omint.precios,idOmint[0],afinidad,bonAfinidad,buscar_mi_coeficiente('OMINT'),group];
-console.log('argsOmint :',argsOmint);
+// console.log('argsOmint :',argsOmint);
     valor_Omint = functions.valor_Omint(...argsOmint);
-console.log('valor_Omint ',valor_Omint);
+    concatenarPrecios = [...concatenarPrecios, ...valor_Omint];
+// console.log('valor_Omint ',valor_Omint);
 }else{ // console.log("no hay precios validos")
 }
 
 if (hayPreciosValidos([
   prices.priceAdultosPr.precios,
   prices.pricePrHijoMenir25.precios,
-  prices.pricePrHijoMenir1.precios])) {
+  prices.pricePrHijoMenir1.precios]) && (empresa_prepaga === 'premedic' || empresa_prepaga === 'premedic')) {
     const argsPremedic = [aporte_OS,buscar_mi_coeficiente('Premedic'),grupo[3],prices.priceAdultosPr.precios,prices.pricePrHijoMenir25.precios,prices.pricePrHijoMenir1.precios,edadIdPremedic,afinidad,bonAfinidad,group];
-console.log('argsPremedic :',argsPremedic);
+// console.log('argsPremedic :',argsPremedic);
 valor_Premedic = functions.valor_Premedic(...argsPremedic);
-console.log('valor_Premedic',valor_Premedic);
+// console.log('valor_Premedic',valor_Premedic);
+concatenarPrecios = [...concatenarPrecios, ...valor_Premedic];
   }
 if (hayPreciosValidos([prices.precioSanCor1Hijo.precios,
   prices.precioSanCor2Hijo.precios,
   prices.precioSanCorTitular.precios,
-  prices.precioConyugeSanCor.precios])) {
+  prices.precioConyugeSanCor.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'sancor') ) {
 
 
     
@@ -450,6 +470,7 @@ const argsSanCor = [
 console.log('argsSanCor :',argsSanCor);
     valor_SanCor = functions.valor_SanCor(...argsSanCor);
 console.log('valor_SanCor',valor_SanCor);
+concatenarPrecios = [...concatenarPrecios, ...valor_SanCor];
   };
 // ... dentro de calcularPrecio ...
 
@@ -459,57 +480,64 @@ const numHijosNumerico = Number(grupo[3]);
 // 2. Definimos la condición con el tipo correcto
 const esGrupoJovenNumeroso = (edad_1 <= 25 && edad_2 <= 25 && numHijosNumerico > 2);
 
-console.log(`--- Verificación Galeno ---`);
-console.log(`Edad1: ${edad_1}, Edad2: ${edad_2}, Hijos: ${numHijosNumerico}`);
-console.log(`¿Es grupo joven numeroso?: ${esGrupoJovenNumeroso}`);
+// console.log(`--- Verificación Galeno ---`);
+// console.log(`Edad1: ${edad_1}, Edad2: ${edad_2}, Hijos: ${numHijosNumerico}`);
+// console.log(`¿Es grupo joven numeroso?: ${esGrupoJovenNumeroso}`);
 
 if (esGrupoJovenNumeroso) {
-    console.log("Saliendo de Galeno: No aplica para grupos jóvenes con más de 2 hijos.");
+    // console.log("Saliendo de Galeno: No aplica para grupos jóvenes con más de 2 hijos.");
 } else {
-    if (hayPreciosValidos([prices.priceGrupoGaleno?.precios])) {
+    if (hayPreciosValidos([prices.priceGrupoGaleno?.precios]) && (empresa_prepaga === 'todas' || empresa_prepaga === 'galeno')) {
         const argsGaleno = [
             aporte_OS, 
             prices.priceGrupoGaleno.precios, 
             await buscar_mi_coeficiente('Galeno')
         ];
         valor_Galeno = functions.valor_Galeno(...argsGaleno);
-        console.log(`✅ Galeno calculado: ${valor_Galeno.length} planes`);
+        // console.log(`✅ Galeno calculado: ${valor_Galeno.length} planes`);
+concatenarPrecios = [...concatenarPrecios, ...valor_Galeno];
     } else {
-        console.log("⚠️ Galeno: No hay precios válidos en DB.");
+        // console.log("⚠️ Galeno: No hay precios válidos en DB.");
     }
+    
 }
 if (hayPreciosValidos([prices.precioTitularSwiss.precios,
 prices.precioConyugeSwiss.precios,
 prices.precioHijo1Swiss.precios,
-prices.precioHijo2Swiss.precios])) {
+prices.precioHijo2Swiss.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'swiss')) {
   const argsSwiss = [aporte_OS,edad_2,grupo[3],numhijo2,prices.precioTitularSwiss.precios,prices.precioConyugeSwiss.precios,prices.precioHijo1Swiss.precios,prices.precioHijo2Swiss.precios,buscar_mi_coeficiente('Swiss Medical'),group];
-console.log('argsSwiss :',argsSwiss);
+// console.log('argsSwiss :',argsSwiss);
 valor_Swiss = functions.valor_Swiss(...argsSwiss);
-console.log('valor_Swiss',valor_Swiss);
+concatenarPrecios = [...concatenarPrecios, ...valor_Swiss];
+// console.log('valor_Swiss',valor_Swiss);
 }
-if (hayPreciosValidos([prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios])) {
+if (hayPreciosValidos([prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'doctored')) {
  
 const argsDoctored = [aporte_OS,buscar_mi_coeficiente('Doctored'),grupo[3],prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios,group];
-console.log('argsDoctored :',argsDoctored);
+// console.log('argsDoctored :',argsDoctored);
   valor_Doctored = functions.valor_Doctored(...argsDoctored);
-console.log('valor_Doctored',valor_Doctored);
+concatenarPrecios = [...concatenarPrecios, ...valor_Doctored];
+// console.log('valor_Doctored',valor_Doctored);
 }
-if (hayPreciosValidos([prices.precioPrevencion.precios])) {
+if (hayPreciosValidos([prices.precioPrevencion.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'prevencion')) {
 
 const argsPrevencion = [aporte_OS,buscar_mi_coeficiente('Prevencion'),grupo[3],prices.precioPrevencion.precios,group];
-console.log('argsPrevencion :',argsPrevencion);
+// console.log('argsPrevencion :',argsPrevencion);
   valor_Prevencion = functions.valor_Prevencion(...argsPrevencion);
-console.log('valor_Prevencion',valor_Prevencion);
+  concatenarPrecios = [...concatenarPrecios, ...valor_Prevencion];
+
+// console.log('valor_Prevencion',valor_Prevencion);
 }
 
 
-if (hayPreciosValidos([prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios])) {
+if (hayPreciosValidos([prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'avalian') ) {
 
 const argsAvalian = [aporte_OS,buscar_mi_coeficiente('Avalian'),group, bonAfinidad, prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,grupo[3]];
 
-console.log('argsAvalian :',argsAvalian);
+// console.log('argsAvalian :',argsAvalian);
   valor_Avalian = functions.valor_Avalian(...argsAvalian);
-console.log('valor_Avalian ',valor_Avalian);
+  concatenarPrecios = [...concatenarPrecios, ...valor_Avalian];
+// console.log('valor_Avalian ',valor_Avalian);
   
 }
 // if (hayPreciosValidos([prices.precioTitularRas.precios, prices.precioConyugeRas.precios, prices.precioHijo1Ras.precios, prices.precioHijo2Ras.precios, prices.precioHijo3Ras.precios])) {
@@ -548,14 +576,14 @@ console.log('valor_Avalian ',valor_Avalian);
 
 
 
-if (hayPreciosValidos([prices.precioMedifeAdultos.precios,  prices.precioMedifeHijo0a20.precios ])) {
-console.log('prices.precioMedifeAdultos.precios : ',prices.precioMedifeAdultos.precios);
-console.log('prices.precioMedifeHijo0a20.precios : ',prices.precioMedifeHijo0a20.precios);
+if (hayPreciosValidos([prices.precioMedifeAdultos.precios,  prices.precioMedifeHijo0a20.precios ])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'medife')) {
+// console.log('prices.precioMedifeAdultos.precios : ',prices.precioMedifeAdultos.precios);
+// console.log('prices.precioMedifeHijo0a20.precios : ',prices.precioMedifeHijo0a20.precios);
 
 const argsMedife = [aporte_OS,grupo[3],prices.precioMedifeAdultos.precios, prices.precioMedifeHijo0a20.precios,buscar_mi_coeficiente('Medife')];
-console.log('argsMedife :',argsMedife);
+// console.log('argsMedife :',argsMedife);
   valor_Medife = functions.valor_Medife(...argsMedife);
-console.log('valor_Medife ',valor_Medife);
+  concatenarPrecios = [...concatenarPrecios, ...valor_Medife];
 }
 
 
@@ -576,10 +604,7 @@ empresas = await obtenerEmpresasDisponibles();
 // console.log('empresas : ' + empresas)
 let allPlanes = await PlanesModel.find({}); // Consulta a la base de datos para obtener los planes
 // console.log('allPlanes : ')  
-// console.log(allPlanes)  
-const concatenarPrecios = valor_Omint.concat(valor_SanCor,valor_Premedic,valor_Galeno,valor_Swiss,valor_Doctored,valor_Prevencion,valor_Medife,valor_Avalian);
-// console.log('concatenarPrecios: ')  
-// console.log(concatenarPrecios)  
+// console.log(allPlanes)
 
   const combinedPlans = functions.combinePlansWithPrices(allPlanes, concatenarPrecios);
 // console.log('combinedPlans :')
@@ -632,9 +657,10 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        }
        return true;
        });
-   
-// console.log('resultado   :');
-// console.log(resultado);
+  console.log(' FINALIZANDO COTIZACION ')
+
+console.log('concatenarPrecios   :');
+console.log(concatenarPrecios);
  res.status(200).json(concatenarPrecios);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 

@@ -47,7 +47,8 @@ export const procesarTodo = async (fechaManual?: string) => {
               edad_1: Number(fila.edad_1),
               edad_2: Number(fila.edad_2 || 0),
               numkids: Number(fila.hijos),
-              tipo: fila.tipo
+              tipo: fila.tipo,
+              empresa_prepaga: 'todas'
             }
           } as any, mockRes as any);
         });

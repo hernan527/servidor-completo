@@ -81,7 +81,7 @@ export function valor_Swiss(
        
 
 			
-        let conPromo = false;
+        let conPromo = true;
         let promocion = 15; // Valor por defecto (15%)
 
 // Verificamos si ambos son menores de 25
@@ -93,12 +93,8 @@ if (edad_1 < 25 && (edad_2 < 25 || edad_2 === 0)) {
     promocion = 15;
 }
         let empresaPlan = [j][0];
-       
         let _id = empresaPlan;
-       
-
         let nombre = empresaPlan.substring(3);
-       
         let promo = functions.promoDescuento(precios[j],promocion, conPromo)[2];
         let descPromo = functions.promoDescuento(precios[j],promo, conPromo)[1]
         let precioTotal = functions.promoDescuento(precios[j],promo, conPromo)[0]
@@ -113,9 +109,9 @@ if (edad_1 < 25 && (edad_2 < 25 || edad_2 === 0)) {
     var plan = new Object();
     plan.item_id = _id;
     plan.name = 'Swiss-Medical ' + nombre;
-     plan.precio = precioTotal;
-//    plan.promoPorcentaje = promo;
-//    plan.promoDescuento = descPromo;
+    plan.precio = precioTotal;
+   plan.promoPorcentaje = promo;
+   plan.promoDescuento = descPromo;
    plan.valorLista = precios[j];
    plan.aporteOS = descOS;
    array.push(plan);	

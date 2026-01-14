@@ -263,7 +263,7 @@ export function productIdOmint(anios, tipoAsoc, miembro,group) {
 		edadID2OMINT =  'omint' + edadID
 	};
 	
-	// console.log("edadID1OMINT=" + edadID1OMINT + "; edadID2OMINT =" + edadID2OMINT + "; hijoIdOMINT ="+ hijoIdOMINT + "; hijo2IdOMINT =" + hijo2IdOMINT)
+	// // console.log("edadID1OMINT=" + edadID1OMINT + "; edadID2OMINT =" + edadID2OMINT + "; hijoIdOMINT ="+ hijoIdOMINT + "; hijo2IdOMINT =" + hijo2IdOMINT)
 	return [edadID1OMINT, edadID2OMINT, hijoIdOMINT, hijo2IdOMINT]
 };
 // <!----------------------Funcion PRODUCT ID OMINT end---------------------------->
@@ -317,7 +317,7 @@ export function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
     let age = Number(edad_1);
     let age2 = (group === 1 || group === 2 || edad_2 === null) ? 0 : Number(edad_2);
 
-    console.log('🚀 Procesando Medifé:', { edad_1: age, edad_2: age2, tipoAsoc, group });
+    // console.log('🚀 Procesando Medifé:', { edad_1: age, edad_2: age2, tipoAsoc, group });
 
     // Lógica para que 'age' siempre sea el mayor de los dos (titular/conyuge)
     if (age2 > age) {
@@ -350,7 +350,7 @@ export function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
         }
     }
 
-    console.log('🆔 ID Generado:', edadIdMedife);
+    // console.log('🆔 ID Generado:', edadIdMedife);
     return edadIdMedife;
 }
 
@@ -651,11 +651,11 @@ let idRecargoHijo21a29 = "asmepriv" + tipo + "RECH21A29";  // recargo hijo de 21
 let idModuloMat = "asmepriv" + tipo + "MODMAT"; // modulo maternidad
 
 ids.push(idAsmepriv, idAdmenorUno, idHijoHasta21, idRecargoHijo21a29, idModuloMat)
-console.log("idAsmepriv :" + idAsmepriv);
-console.log("idAdmenorUno :" + idAdmenorUno);
-console.log("idHijoHasta21 :" + idHijoHasta21);
-console.log("idRecargoHijo21a29 :" + idRecargoHijo21a29);
-console.log("idModuloMat :" + idModuloMat);
+// console.log("idAsmepriv :" + idAsmepriv);
+// console.log("idAdmenorUno :" + idAdmenorUno);
+// console.log("idHijoHasta21 :" + idHijoHasta21);
+// console.log("idRecargoHijo21a29 :" + idRecargoHijo21a29);
+// console.log("idModuloMat :" + idModuloMat);
 
 
 return ids;
@@ -696,7 +696,7 @@ export function productIdLuisPasteur(edad_1, edad_2,hijos, tipoAsoc, group) {
     }
 
 
-	console.log('grupo : ' + grupo);
+	// console.log('grupo : ' + grupo);
 
 	const getAgeRange = (age) =>  {
 		if (age < 18) return;
@@ -712,20 +712,20 @@ export function productIdLuisPasteur(edad_1, edad_2,hijos, tipoAsoc, group) {
 	
 
     let rangoEtario = getAgeRange(age);
-	console.log('grupo : ' + grupo);
-	console.log('tipo : ' + tipo);
-	console.log('rangoEtario : ' + rangoEtario);
-	console.log('hijos : ' + kids);
+	// console.log('grupo : ' + grupo);
+	// console.log('tipo : ' + tipo);
+	// console.log('rangoEtario : ' + rangoEtario);
+	// console.log('hijos : ' + kids);
 
 	let idLuispasteur =	"luispasteur"  + grupo + tipo + rangoEtario + kids;
-	console.log('idLuispasteur : ' + idLuispasteur);
+	// console.log('idLuispasteur : ' + idLuispasteur);
 
 	let idNieto = "luispasteur" + "NIETO" + tipo 
 	let idAd =	"luispasteur" + "AD" + tipo
 	let idHijo = "luispasteur" + "HIJO" + tipo
-	console.log('idNieto : ' + idNieto);
-	console.log('idAd : ' + idAd);
-	console.log('idHijo : ' + idHijo);
+	// console.log('idNieto : ' + idNieto);
+	// console.log('idAd : ' + idAd);
+	// console.log('idHijo : ' + idHijo);
 
 
 	ids.push(idLuispasteur, idNieto, idAd, idHijo)
@@ -761,7 +761,7 @@ export function productIdAvalian(anios1, anios2, tipoAsoc, group) {
         tipo = "P";
     }
 
-    console.log("ID AVALIAN EN CURSO - tipo: " + tipo);
+    // console.log("ID AVALIAN EN CURSO - tipo: " + tipo);
 
     // Function to determine amasdege range
     const getAgeRange = (age) => {
@@ -787,8 +787,8 @@ export function productIdAvalian(anios1, anios2, tipoAsoc, group) {
         rangoEtario_2 = rangoEtario_1; // Same range as the first person
     }
 
-    console.log("rangoEtario_1: " + rangoEtario_1);
-    console.log("rangoEtario_2: " + rangoEtario_2);
+    // console.log("rangoEtario_1: " + rangoEtario_1);
+    // console.log("rangoEtario_2: " + rangoEtario_2);
 
     // Generate IDs for each role
     idTitular = "avalian" +  "Z" + zonaComercial[0] + tipo + rangoEtario_1;

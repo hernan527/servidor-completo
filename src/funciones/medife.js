@@ -7,22 +7,22 @@ export function valor_Medife(
     precioHijoMedife,    // Precio estándar para el rango 0-21 años
     coeficienteMedife
 ) {
-    console.log("--- INICIO CÁLCULO MEDIFÉ ---");
-    console.log('aportesOS :', aportesOS)
+    // console.log("--- INICIO CÁLCULO MEDIFÉ ---");
+    // console.log('aportesOS :', aportesOS)
     let tipo_de_socio = aportesOS[0];
     let con_afinidad = true;
-    console.log('Hijos: ',numkids, ' | Afinidad: ',con_afinidad,' | Tipo Socio: ',tipo_de_socio);
+    // console.log('Hijos: ',numkids, ' | Afinidad: ',con_afinidad,' | Tipo Socio: ',tipo_de_socio);
     let array = [];
-        console.log('precioTitularMedife :', precioTitularMedife)
-    console.log('precioHijoMedife:', precioHijoMedife)
-    console.log('coeficienteMedife :', coeficienteMedife)
+        // console.log('precioTitularMedife :', precioTitularMedife)
+    // console.log('precioHijoMedife:', precioHijoMedife)
+    // console.log('coeficienteMedife :', coeficienteMedife)
 
     // 1. Cálculo de Descuento de Obra Social
     let descOS = functions.calculodescOS(
         aportesOS[0], aportesOS[2], aportesOS[3], 
         coeficienteMedife, aportesOS[4], aportesOS[5], aportesOS[1]
     );
-    console.log("Descuento OS (Aportes):", descOS);
+    // console.log("Descuento OS (Aportes):", descOS);
 
     // 2. Sumar Hijos al precio base de Adultos
     let preciosAcumulados = { ...precioTitularMedife };
@@ -32,9 +32,9 @@ export function valor_Medife(
             ...acc,
             [key]: (acc[key] || 0) + (parseInt(value) * parseInt(numkids))
         }), preciosAcumulados);
-        console.log("Precios con hijos sumados (Lista):", preciosAcumulados);
+        // console.log("Precios con hijos sumados (Lista):", preciosAcumulados);
     } else {
-        console.log("No se sumaron hijos (numkids = 0 o sin precioHijo)");
+        // console.log("No se sumaron hijos (numkids = 0 o sin precioHijo)");
     }
 
     // 3. Bucle para procesar cada plan
@@ -50,7 +50,7 @@ export function valor_Medife(
         // Aplicamos la desregulación de aportes (restando descOS)
         let precioFinal = functions.final(aportesOS[0], descOS, precioConPromo);
 
-        console.log(`Plan: ${j} | Lista: ${valorLista} | Descuento: ${montoDesc} (${(pct*100)}%) | Final: ${precioFinal}`);
+        // console.log(`Plan: ${j} | Lista: ${valorLista} | Descuento: ${montoDesc} (${(pct*100)}%) | Final: ${precioFinal}`);
 
         array.push({
             item_id: j,
@@ -62,6 +62,6 @@ export function valor_Medife(
         });
     }
 
-    console.log("--- FIN CÁLCULO MEDIFÉ ---");
+    // console.log("--- FIN CÁLCULO MEDIFÉ ---");
     return array;
 }

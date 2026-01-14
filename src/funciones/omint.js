@@ -1,7 +1,7 @@
   // <!----------------------Funcion VALOR DEL PLAN OMINT start----------------------------> 
   import * as functions from './functions';
 
-  export function valor_Omint(aportesOS,edad_2,num_Hijos,numhijo_2, precio_titular, precio_conyuge, precio_hijo1, precio_hijo2, edad_ID1OMINT,conPromo,promocion,coeficiente,group) {
+  export function valor_Omint(aportesOS,edad_2,num_Hijos,numhijo_2, precio_titular, precio_conyuge, precio_hijo1, precio_hijo2, edad_ID1OMINT,con_Promo,promo,coeficiente,group) {
     // console.log('aportesOS  : ' + aportesOS);
     // console.log('edad_2  : '+ edad_2);
     // console.log('num_Hijos  : '+ num_Hijos);
@@ -30,6 +30,8 @@
     let  hijo_1 = precio_hijo1;
     let  hijo_2 = precio_hijo2;
     let numHijos = num_Hijos;
+    let conPromo = true; 
+    let promocion = 0.15;
 
     if(group === 1)
     {hijos=0;
