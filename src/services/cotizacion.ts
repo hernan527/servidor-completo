@@ -420,7 +420,11 @@ let valor_Medife:any=[];
 // let valor_Asmepriv:any=[];
 // let valor_LuisPasteur:any=[];
 // let valor_BayresPlan:any=[];
-if(hayPreciosValidos([prices.precio_titular_Omint.precios,
+
+
+// --- BLOQUE OMINT ---
+try {
+  if (hayPreciosValidos([prices.precio_titular_Omint.precios,
   prices.precio_conyuge_Omint.precios,
   prices.precio_hijo1_Omint.precios,
   prices.precio_hijo2_Omint.precios]) && (empresa_prepaga === 'todas' || empresa_prepaga === 'omint')) {
@@ -430,10 +434,14 @@ if(hayPreciosValidos([prices.precio_titular_Omint.precios,
     valor_Omint = functions.valor_Omint(...argsOmint);
     concatenarPrecios = [...concatenarPrecios, ...valor_Omint];
 // console.log('valor_Omint ',valor_Omint);
-}else{ // console.log("no hay precios validos")
+}} catch (error) {
+  console.error(`❌ Error calculando OMINT para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
 }
 
-if (hayPreciosValidos([
+  // --- BLOQUE PREMEDIC---
+try {
+  if (hayPreciosValidos([
   prices.priceAdultosPr.precios,
   prices.pricePrHijoMenir25.precios,
   prices.pricePrHijoMenir1.precios]) && (empresa_prepaga === 'premedic' || empresa_prepaga === 'premedic')) {
@@ -443,7 +451,13 @@ valor_Premedic = functions.valor_Premedic(...argsPremedic);
 // console.log('valor_Premedic',valor_Premedic);
 concatenarPrecios = [...concatenarPrecios, ...valor_Premedic];
   }
-if (hayPreciosValidos([prices.precioSanCor1Hijo.precios,
+} catch (error) {
+  console.error(`❌ Error calculando Premedic para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
+  // --- BLOQUE SANCOR SALUD  ---
+try {
+  if (hayPreciosValidos([prices.precioSanCor1Hijo.precios,
   prices.precioSanCor2Hijo.precios,
   prices.precioSanCorTitular.precios,
   prices.precioConyugeSanCor.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'sancor') ) {
@@ -471,9 +485,14 @@ const argsSanCor = [
     valor_SanCor = functions.valor_SanCor(...argsSanCor);
 // console.log('valor_SanCor',valor_SanCor);
 concatenarPrecios = [...concatenarPrecios, ...valor_SanCor];
-  };
+  }
+ } catch (error) {
+  console.error(`❌ Error calculando Sancor Salud para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+} 
 // ... dentro de calcularPrecio ...
 
+try {
 // 1. Convertimos o aseguramos que numHijos sea un número para evitar el error TS2365
 const numHijosNumerico = Number(grupo[3]); 
 
@@ -487,7 +506,10 @@ const esGrupoJovenNumeroso = (edad_1 <= 25 && edad_2 <= 25 && numHijosNumerico >
 if (esGrupoJovenNumeroso) {
     // console.log("Saliendo de Galeno: No aplica para grupos jóvenes con más de 2 hijos.");
 } else {
-    if (hayPreciosValidos([prices.priceGrupoGaleno?.precios]) && (empresa_prepaga === 'todas' || empresa_prepaga === 'galeno')) {
+  
+   // --- BLOQUE GALENO ---
+
+  if (hayPreciosValidos([prices.priceGrupoGaleno?.precios]) && (empresa_prepaga === 'todas' || empresa_prepaga === 'galeno')) {
         const argsGaleno = [
             aporte_OS, 
             prices.priceGrupoGaleno.precios, 
@@ -501,7 +523,13 @@ concatenarPrecios = [...concatenarPrecios, ...valor_Galeno];
     }
     
 }
-if (hayPreciosValidos([prices.precioTitularSwiss.precios,
+ } catch (error) {
+  console.error(`❌ Error calculando Galeno para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
+   // --- BLOQUE SWISS MEDICAL ---
+try {
+  if (hayPreciosValidos([prices.precioTitularSwiss.precios,
 prices.precioConyugeSwiss.precios,
 prices.precioHijo1Swiss.precios,
 prices.precioHijo2Swiss.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'swiss')) {
@@ -511,7 +539,13 @@ valor_Swiss = functions.valor_Swiss(...argsSwiss);
 concatenarPrecios = [...concatenarPrecios, ...valor_Swiss];
 // console.log('valor_Swiss',valor_Swiss);
 }
-if (hayPreciosValidos([prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'doctored')) {
+} catch (error) {
+  console.error(`❌ Error calculando Swiss Medical para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
+   // --- BLOQUE DOCTORED ---
+try {
+  if (hayPreciosValidos([prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'doctored')) {
  
 const argsDoctored = [aporte_OS,buscar_mi_coeficiente('Doctored'),grupo[3],prices.precioDoctoredGrupo.precios,prices.precioDoctoredHijo3.precios,group];
 // console.log('argsDoctored :',argsDoctored);
@@ -519,7 +553,13 @@ const argsDoctored = [aporte_OS,buscar_mi_coeficiente('Doctored'),grupo[3],price
 concatenarPrecios = [...concatenarPrecios, ...valor_Doctored];
 // console.log('valor_Doctored',valor_Doctored);
 }
-if (hayPreciosValidos([prices.precioPrevencion.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'prevencion')) {
+} catch (error) {
+  console.error(`❌ Error calculando Doctored para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
+   // --- BLOQUE PREVENCION SALUD ---
+try {
+  if (hayPreciosValidos([prices.precioPrevencion.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'prevencion')) {
 
 const argsPrevencion = [aporte_OS,buscar_mi_coeficiente('Prevencion'),grupo[3],prices.precioPrevencion.precios,group];
 // console.log('argsPrevencion :',argsPrevencion);
@@ -528,9 +568,14 @@ const argsPrevencion = [aporte_OS,buscar_mi_coeficiente('Prevencion'),grupo[3],p
 
 // console.log('valor_Prevencion',valor_Prevencion);
 }
+} catch (error) {
+  console.error(`❌ Error calculando Prevencion Salud para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
 
-
-if (hayPreciosValidos([prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'avalian') ) {
+   // --- BLOQUE AVALIAN ---
+try {
+  if (hayPreciosValidos([prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,prices.precioAvalianHijo25.precios])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'avalian') ) {
 
 const argsAvalian = [aporte_OS,buscar_mi_coeficiente('Avalian'),group, bonAfinidad, prices.precioAvalianTitular.precios,prices.precioAvalianConyuge.precios,prices.precioAvalianHijo1.precios,prices.precioAvalianHijo2.precios,prices.precioAvalianHijo3.precios,grupo[3]];
 
@@ -539,6 +584,10 @@ const argsAvalian = [aporte_OS,buscar_mi_coeficiente('Avalian'),group, bonAfinid
   concatenarPrecios = [...concatenarPrecios, ...valor_Avalian];
 // console.log('valor_Avalian ',valor_Avalian);
   
+}
+} catch (error) {
+  console.error(`❌ Error calculando Avalian para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
 }
 // if (hayPreciosValidos([prices.precioTitularRas.precios, prices.precioConyugeRas.precios, prices.precioHijo1Ras.precios, prices.precioHijo2Ras.precios, prices.precioHijo3Ras.precios])) {
 // const argsRas = [aporte_OS,buscar_mi_coeficiente('Ras'), group, bonAfinidad, prices.precioTitularRas.precios, prices.precioConyugeRas.precios, prices.precioHijo1Ras.precios, prices.precioHijo2Ras.precios, prices.precioHijo3Ras.precios];
@@ -576,7 +625,9 @@ const argsAvalian = [aporte_OS,buscar_mi_coeficiente('Avalian'),group, bonAfinid
 
 
 
-if (hayPreciosValidos([prices.precioMedifeAdultos.precios,  prices.precioMedifeHijo0a20.precios ])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'medife')) {
+   // --- BLOQUE MEDIFE ---
+try {
+  if (hayPreciosValidos([prices.precioMedifeAdultos.precios,  prices.precioMedifeHijo0a20.precios ])  && (empresa_prepaga === 'todas' || empresa_prepaga === 'medife')) {
 // console.log('prices.precioMedifeAdultos.precios : ',prices.precioMedifeAdultos.precios);
 // console.log('prices.precioMedifeHijo0a20.precios : ',prices.precioMedifeHijo0a20.precios);
 
@@ -586,7 +637,10 @@ const argsMedife = [aporte_OS,grupo[3],prices.precioMedifeAdultos.precios, price
   concatenarPrecios = [...concatenarPrecios, ...valor_Medife];
 }
 
-
+} catch (error) {
+  console.error(`❌ Error calculando Medife para ID ${group}:`, error.message);
+  // No hacemos nada, dejamos que siga con la siguiente prepaga
+}
 
 
 for ( let i=0 ; i < prices.length ; i++){
