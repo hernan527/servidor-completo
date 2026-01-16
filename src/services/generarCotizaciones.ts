@@ -1,95 +1,69 @@
-import { supabase } from '../config/database'; 
+import * as fs from 'fs';
+import path from 'path';
+import csv from 'csv-parser';
+// Importamos la función y le ponemos el alias 'createCsvWriter' para no cambiar nada abajo
+import { createObjectCsvWriter as createCsvWriter } from 'csv-writer'; 
 import { calcularPrecio } from './cotizacion';
 
-export const procesarTodo = async (fechaManual?: string) => {
-  const FECHA_CORTE = fechaManual ? new Date(fechaManual).toISOString() : new Date().toISOString(); 
-  
-  console.log(`⏳ Iniciando sincronización veloz.`);
-  const TRAMO_SIZE = 5; // Bajamos el lote a 50 para no saturar la memoria
-  let totalProcesadas = 0;
-  let continuar = true;
+export const procesarCotiSimple = async () => {
+    const INPUT_PATH = path.join(process.cwd(), 'src', 'assets', 'data', 'datos.csv');
+    const OUTPUT_CSV = path.join(process.cwd(), 'src', 'assets', 'data', 'respuestas_temp.csv');
 
-  while (continuar) {
-    const { data: filas, error } = await supabase
-      .from('cotizaciones_maestras')
-      .select('id, group, edad_1, edad_2, hijos, tipo')
-      .lt('updated_at', FECHA_CORTE) 
-      .order('updated_at', { ascending: true }) 
-      .limit(TRAMO_SIZE);
+    const registros: any[] = [];
 
-    if (error || !filas || filas.length === 0) {
-      continuar = false;
-      break;
-    }
-
-    // --- MAGIA: Procesamos los 50 registros EN PARALELO ---
-const promesas = filas.map(async (fila) => {
-    return new Promise((resolve) => {
-        // Seguro de vida: Si en 10 segundos no respondió, cancelamos esa fila
- const timeout = setTimeout(() => {
-    console.log(`⏱️ Timeout en ID: ${fila.id}, saltando.`);
-    // DEVOLVEMOS UN OBJETO IGUAL, pero con error
-    resolve({ 
-        id: fila.id, 
-        respuesta: { error: "Timeout cronico" }, 
-        updated_at: new Date().toISOString() 
+    // Ahora esta línea funciona perfecto y es igual a la que tenías
+    const csvWriter = createCsvWriter({
+        path: OUTPUT_CSV,
+        header: [
+            { id: 'id', title: 'id' },
+            { id: 'respuesta', title: 'respuesta' }
+        ],
+        append: false
     });
-}, 20000); // 20 segundos
 
-        const mockRes = {
-            json: (data: any) => { clearTimeout(timeout); resolve({ id: fila.id, respuesta: data, updated_at: new Date().toISOString() }); },
-            send: (data: any) => { clearTimeout(timeout); resolve({ id: fila.id, respuesta: data, updated_at: new Date().toISOString() }); },
-            status: function() { return this; }
-        };
+    console.log("🚀 Iniciando proceso...");
 
-        try {
-            calcularPrecio({
-                body: {
-                    group: String(fila.group),
-                    edad_1: Number(fila.edad_1),
-                    edad_2: Number(fila.edad_2 || 0),
-                    numkids: Number(fila.hijos),
-                    tipo: fila.tipo,
-                    empresa_prepaga: 'todas'
+    fs.createReadStream(INPUT_PATH)
+        .pipe(csv())
+        .on('data', (data) => registros.push(data))
+        .on('error', (err) => console.error("❌ Error leyendo CSV:", err))
+        .on('end', async () => {
+            console.log(`✅ CSV cargado. Procesando ${registros.length} filas.`);
+
+            for (let i = 0; i < registros.length; i++) {
+                const fila = registros[i];
+                
+                const mockRes = {
+                    json: (data: any) => { 
+                        fila.respuesta = JSON.stringify(data); 
+                        return data; 
+                    },
+                    status: function() { return this; }
+                };
+
+                try {
+                    await calcularPrecio({ 
+                        body: {
+                            group: Number(fila.group),
+                            edad_1: Number(fila.edad_1),
+                            edad_2: Number(fila.edad_2 || 0),
+                            numkids: Number(fila.hijos || 0),
+                            tipo: String(fila.tipo || "D"),
+                            empresa_prepaga: 'todas'
+                        } 
+                    } as any, mockRes as any);
+                    
+                    await csvWriter.writeRecords([{ 
+                        id: fila.id, 
+                        respuesta: fila.respuesta 
+                    }]);
+
+                    console.log(`[${i + 1}/${registros.length}] ✅ ID ${fila.id} OK`);
+
+                } catch (err: any) {
+                    console.error(`❌ Error en ID ${fila.id}: ${err.message}`);
                 }
-            } as any, mockRes as any).catch(err => {
-                clearTimeout(timeout);
-                console.error(`❌ Error interno calcularPrecio ID ${fila.id}`);
-                resolve(null);
-            });
-        } catch (err) {
-    console.error(`❌ Error fatal en ID ${fila.id}:`, err);
-    resolve({ 
-        id: fila.id, 
-        respuesta: { error: "ERROR_GET_ITEMS_CRASH" }, 
-        updated_at: new Date().toISOString() 
-    });
-}
-    });
-});
-const resultadosBatch = (await Promise.all(promesas)).filter(r => r !== null);
-
-    console.log(`📦 Lote calculado. Intentando subir ${resultadosBatch.length} registros a Supabase...`);
-
-    if (resultadosBatch.length > 0) {
-        // Ejecutamos el upsert UNA sola vez y capturamos el error
-       
-
-       const { data: confirmacion, error: upsertError } = await supabase
-  .from('cotizaciones_maestras')
-  .upsert(resultadosBatch)
-  .select('id'); // Pedimos que nos devuelva los IDs guardados
-
-if (upsertError) {
-  console.error("❌ ERROR REAL DE SUPABASE:", upsertError.message);
-} else if (confirmacion && confirmacion.length > 0) {
-  totalProcesadas += confirmacion.length;
-  console.log(`✅ [CONFIRMADO] Se guardaron ${confirmacion.length} filas reales en Supabase. Total: ${totalProcesadas}`);
-} else {
-  console.warn("⚠️ Supabase devolvió éxito pero 0 filas guardadas. Revisar RLS o Clave Primaria.");
-}
-} // Aquí cierra el while
-
-console.log(`🏁 Proceso finalizado. Total de registros actualizados: ${totalProcesadas}`);
-};
+            }
+            console.log("🏁 Proceso terminado.");
+        });
 };

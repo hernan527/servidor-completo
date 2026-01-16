@@ -88,8 +88,17 @@ function valor_Swiss(aportesOS, edad_1, edad_2, numHijos, numhijo2, titular, con
     }
     //	<!-----------------------Bucle SANCOR start------------------------>							
     for (let j in precios) {
-        let conPromo = false;
-        let promocion = 0;
+        let conPromo = true;
+        let promocion = 15; // Valor por defecto (15%)
+        // Verificamos si ambos son menores de 25
+        // Agregamos la condición de que edad_2 sea > 0 si es pareja, 
+        // o simplemente validamos edad_1 si es individual.
+        if (edad_1 < 25 && (edad_2 < 25 || edad_2 === 0)) {
+            promocion = 0.50;
+        }
+        else {
+            promocion = 0.15;
+        }
         let empresaPlan = [j][0];
         let _id = empresaPlan;
         let nombre = empresaPlan.substring(3);
@@ -101,9 +110,9 @@ function valor_Swiss(aportesOS, edad_1, edad_2, numHijos, numhijo2, titular, con
         var plan = new Object();
         plan.item_id = _id;
         plan.name = 'Swiss-Medical ' + nombre;
-        plan.precio = precio;
-        //    plan.promoPorcentaje = promo;
-        //    plan.promoDescuento = descPromo;
+        plan.precio = precioTotal;
+        plan.promoPorcentaje = promo;
+        plan.promoDescuento = descPromo;
         plan.valorLista = precios[j];
         plan.aporteOS = descOS;
         array.push(plan);

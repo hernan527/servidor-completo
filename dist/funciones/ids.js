@@ -303,7 +303,7 @@ function productIdOmint(anios, tipoAsoc, miembro, group) {
         edadID2OMINT = 'omint' + edadID;
     }
     ;
-    // console.log("edadID1OMINT=" + edadID1OMINT + "; edadID2OMINT =" + edadID2OMINT + "; hijoIdOMINT ="+ hijoIdOMINT + "; hijo2IdOMINT =" + hijo2IdOMINT)
+    // // console.log("edadID1OMINT=" + edadID1OMINT + "; edadID2OMINT =" + edadID2OMINT + "; hijoIdOMINT ="+ hijoIdOMINT + "; hijo2IdOMINT =" + hijo2IdOMINT)
     return [edadID1OMINT, edadID2OMINT, hijoIdOMINT, hijo2IdOMINT];
 }
 ;
@@ -353,69 +353,50 @@ function productIdSwiss(anios, tipoAsoc, group) {
 // <!----------------------Funcion PRODUCT ID MEDIFE start----------------------------> 
 function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
     let edadIdMedife = '';
-    let age2 = edad_2;
-    let age = edad_1;
-    if (group === 1) {
-        age2 = 0;
-    }
-    else if (group === 2) {
-        age2 = 0;
-    }
-    else { }
-    if (edad_2 === null) {
-        age2 = 0;
-    }
+    // Aseguramos valores numéricos
+    let age = Number(edad_1);
+    let age2 = (group === 1 || group === 2 || edad_2 === null) ? 0 : Number(edad_2);
+    // console.log('🚀 Procesando Medifé:', { edad_1: age, edad_2: age2, tipoAsoc, group });
+    // Lógica para que 'age' siempre sea el mayor de los dos (titular/conyuge)
     if (age2 > age) {
-        age2 = age;
-        age = edad_2;
+        [age, age2] = [age2, age]; // Swap elegante
     }
-    ;
-    if (age2 >= 18) {
-        if (age <= 25) {
-            edadIdMedife = tipoAsoc + 'MAT-JOV' + 0.25;
-        }
-        else if (age <= 35 && age >= 26) {
-            edadIdMedife = tipoAsoc + 'MAT-JOV' + 26.35;
-        }
-        else if (age <= 40 && age >= 36) {
-            edadIdMedife = tipoAsoc + 'MAT' + 36.40;
-        }
-        else if (age <= 50 && age >= 41) {
-            edadIdMedife = tipoAsoc + 'MAT' + 41 - 50;
-        }
-        else if (age <= 60 && age >= 51) {
-            edadIdMedife = tipoAsoc + 'MAT' + 51.60;
-        }
-        else if (age <= 65 && age >= 61) {
-            edadIdMedife = tipoAsoc + 'MAT' + 61.65;
-        }
+    // Determinamos si es Matrimonio o Individual
+    const modal = (age2 >= 18) ? 'MAT' : 'IND';
+    const prefijo = 'medife' + tipoAsoc + modal;
+    // Evaluación de rangos
+    if (age <= 25) {
+        edadIdMedife = prefijo + '0-25';
     }
-    else if (age2 == 0) {
-        if (age <= 25) {
-            edadIdMedife = tipoAsoc + 'IND-JOV' + 0.25;
-        }
-        else if (age <= 35 && age >= 26) {
-            edadIdMedife = tipoAsoc + 'IND-JOV' + 26.35;
-        }
-        else if (age <= 40 && age >= 36) {
-            edadIdMedife = tipoAsoc + 'IND' + 36.40;
-        }
-        else if (age <= 45 && age >= 41) {
-            edadIdMedife = tipoAsoc + 'IND' + 42.45;
-        }
-        else if (age <= 50 && age >= 46) {
-            edadIdMedife = tipoAsoc + 'IND' + 46.50;
-        }
-        else if (age <= 60 && age >= 51) {
-            edadIdMedife = tipoAsoc + 'IND' + 51.60;
-        }
-        else if (age <= 60 && age >= 51) {
-            edadIdMedife = tipoAsoc + 'IND' + 61.65;
+    else if (age <= 35) {
+        edadIdMedife = prefijo + '26-35';
+    }
+    else if (age <= 40) {
+        edadIdMedife = prefijo + '36-40';
+    }
+    else {
+        // Rangos específicos según modalidad
+        if (modal === 'MAT') {
+            if (age <= 50)
+                edadIdMedife = prefijo + '41-50';
+            else if (age <= 60)
+                edadIdMedife = prefijo + '51-60';
+            else if (age <= 65)
+                edadIdMedife = prefijo + '61-65';
         }
         else {
-            edadIdMedife = '';
+            // Modalidad Individual
+            if (age <= 45)
+                edadIdMedife = prefijo + '41-45';
+            else if (age <= 50)
+                edadIdMedife = prefijo + '46-50';
+            else if (age <= 60)
+                edadIdMedife = prefijo + '51-60';
+            else if (age <= 65)
+                edadIdMedife = prefijo + '61-65';
         }
     }
+    // console.log('🆔 ID Generado:', edadIdMedife);
     return edadIdMedife;
 }
 // <!----------------------Funcion PRODUCT ID MEDIFE end----------------------------> 
@@ -718,11 +699,11 @@ function productIdAsmepriv(edad_1, edad_2, hijos, tipoAsoc, group) {
     let idRecargoHijo21a29 = "asmepriv" + tipo + "RECH21A29"; // recargo hijo de 21 a 29 años
     let idModuloMat = "asmepriv" + tipo + "MODMAT"; // modulo maternidad
     ids.push(idAsmepriv, idAdmenorUno, idHijoHasta21, idRecargoHijo21a29, idModuloMat);
-    console.log("idAsmepriv :" + idAsmepriv);
-    console.log("idAdmenorUno :" + idAdmenorUno);
-    console.log("idHijoHasta21 :" + idHijoHasta21);
-    console.log("idRecargoHijo21a29 :" + idRecargoHijo21a29);
-    console.log("idModuloMat :" + idModuloMat);
+    // console.log("idAsmepriv :" + idAsmepriv);
+    // console.log("idAdmenorUno :" + idAdmenorUno);
+    // console.log("idHijoHasta21 :" + idHijoHasta21);
+    // console.log("idRecargoHijo21a29 :" + idRecargoHijo21a29);
+    // console.log("idModuloMat :" + idModuloMat);
     return ids;
 }
 // <!----------------------Funcion PRODUCT ID ASMEPRIV end---------------------------->
@@ -754,7 +735,7 @@ function productIdLuisPasteur(edad_1, edad_2, hijos, tipoAsoc, group) {
     if (hijos === null || hijos === 0) {
         kids = '';
     }
-    console.log('grupo : ' + grupo);
+    // console.log('grupo : ' + grupo);
     const getAgeRange = (age) => {
         if (age < 18)
             return;
@@ -775,18 +756,18 @@ function productIdLuisPasteur(edad_1, edad_2, hijos, tipoAsoc, group) {
         return '60';
     };
     let rangoEtario = getAgeRange(age);
-    console.log('grupo : ' + grupo);
-    console.log('tipo : ' + tipo);
-    console.log('rangoEtario : ' + rangoEtario);
-    console.log('hijos : ' + kids);
+    // console.log('grupo : ' + grupo);
+    // console.log('tipo : ' + tipo);
+    // console.log('rangoEtario : ' + rangoEtario);
+    // console.log('hijos : ' + kids);
     let idLuispasteur = "luispasteur" + grupo + tipo + rangoEtario + kids;
-    console.log('idLuispasteur : ' + idLuispasteur);
+    // console.log('idLuispasteur : ' + idLuispasteur);
     let idNieto = "luispasteur" + "NIETO" + tipo;
     let idAd = "luispasteur" + "AD" + tipo;
     let idHijo = "luispasteur" + "HIJO" + tipo;
-    console.log('idNieto : ' + idNieto);
-    console.log('idAd : ' + idAd);
-    console.log('idHijo : ' + idHijo);
+    // console.log('idNieto : ' + idNieto);
+    // console.log('idAd : ' + idAd);
+    // console.log('idHijo : ' + idHijo);
     ids.push(idLuispasteur, idNieto, idAd, idHijo);
     return ids;
 }
@@ -814,7 +795,7 @@ function productIdAvalian(anios1, anios2, tipoAsoc, group) {
     else if (tipo === "I") {
         tipo = "P";
     }
-    console.log("ID AVALIAN EN CURSO - tipo: " + tipo);
+    // console.log("ID AVALIAN EN CURSO - tipo: " + tipo);
     // Function to determine amasdege range
     const getAgeRange = (age) => {
         if (age <= 25)
@@ -846,8 +827,8 @@ function productIdAvalian(anios1, anios2, tipoAsoc, group) {
     else {
         rangoEtario_2 = rangoEtario_1; // Same range as the first person
     }
-    console.log("rangoEtario_1: " + rangoEtario_1);
-    console.log("rangoEtario_2: " + rangoEtario_2);
+    // console.log("rangoEtario_1: " + rangoEtario_1);
+    // console.log("rangoEtario_2: " + rangoEtario_2);
     // Generate IDs for each role
     idTitular = "avalian" + "Z" + zonaComercial[0] + tipo + rangoEtario_1;
     idConyuge = "avalian" + "Z" + zonaComercial[0] + tipo + rangoEtario_2;

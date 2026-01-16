@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.valor_Omint = valor_Omint;
 // <!----------------------Funcion VALOR DEL PLAN OMINT start----------------------------> 
 const functions = __importStar(require("./functions"));
-function valor_Omint(aportesOS, edad_2, num_Hijos, numhijo_2, precio_titular, precio_conyuge, precio_hijo1, precio_hijo2, edad_ID1OMINT, conPromo, promocion, coeficiente, group) {
+function valor_Omint(aportesOS, edad_2, num_Hijos, numhijo_2, precio_titular, precio_conyuge, precio_hijo1, precio_hijo2, edad_ID1OMINT, con_Promo, promo, coeficiente, group) {
     // console.log('aportesOS  : ' + aportesOS);
     // console.log('edad_2  : '+ edad_2);
     // console.log('num_Hijos  : '+ num_Hijos);
@@ -62,6 +62,8 @@ function valor_Omint(aportesOS, edad_2, num_Hijos, numhijo_2, precio_titular, pr
     let hijo_1 = precio_hijo1;
     let hijo_2 = precio_hijo2;
     let numHijos = num_Hijos;
+    let conPromo = true;
+    let promocion = 0.15;
     if (group === 1) {
         hijos = 0;
         numHijos = 0;
@@ -137,7 +139,7 @@ function valor_Omint(aportesOS, edad_2, num_Hijos, numhijo_2, precio_titular, pr
         var plan = new Object();
         plan.item_id = _id;
         plan.name = 'OMINT  ' + nombre;
-        plan.precio = precio;
+        plan.precio = precioTotal;
         plan.promoPorcentaje = promo;
         plan.promoDescuento = descPromo;
         plan.valorLista = precios[j];

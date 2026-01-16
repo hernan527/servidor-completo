@@ -1,18 +1,16 @@
-// En tu archivo de rutas (ej: routes.ts o index.ts)
 import { Router } from 'express';
-import { procesarTodo } from '../services/generarCotizaciones'; // Ajustá el path
+import { procesarCotiSimple } from '../services/generarCotizaciones';
 
 const router = Router();
 
-// Key: fecha_corte
-
-// Value: 2030-01-08T23:59:59 (Por ejemplo, si querés procesar todo lo que se haya hecho antes de la medianoche de hoy).
-
-// La URL en Postman se vería así: .../generar-maestro?key=therollingstones&fecha_corte=2026-01-08T23:59:59
+/**
+ * Endpoint para disparar la carga masiva
+ * URL: .../generar-maestro?key=therollingstones&fecha_corte=2026-01-14T23:59:59
+ */
 router.post('/generar-maestro', async (req, res) => {
     try {
         const key = req.query.key as string;
-        // Capturamos la fecha que escribiste en Postman
+        // Capturamos la fecha que escribiste en Postman para filtrar en Supabase
         const fechaManual = req.query.fecha_corte as string; 
 
         const LLAVE_MAESTRA = process.env.ADMIN_SECRET_KEY || 'therollingstones';
@@ -21,19 +19,20 @@ router.post('/generar-maestro', async (req, res) => {
             return res.status(401).json({ error: 'Llave incorrecta' });
         }
 
-        // Se la pasamos a la función procesarTodo
-        procesarTodo(fechaManual)
-            .then(() => console.log("Carga masiva terminada"))
-            .catch(err => console.error("Error:", err));
-
+        // Ejecutamos la funcion completarPropiedadRespuesta (la version que va de a uno)
+        // No usamos 'await' aqui para que la respuesta de Express sea inmediata
+        procesarCotiSimple()
+            .then(() => console.log("✅ Carga masiva terminada con exito"))
+            .catch((err: any) => console.error("❌ Error en el proceso masivo:", err));
+        // Respondemos al cliente que el proceso ya arranco
         res.status(202).json({ 
             mensaje: "🚀 Proceso iniciado",
-            objetivo: fechaManual ? `Rehacer todo lo anterior a ${fechaManual}` : "Sincronizar pendientes"
         });
 
     } catch (error) {
-        res.status(500).json({ error: "Error al iniciar" });
+        console.error("Error al iniciar el endpoint:", error);
+        res.status(500).json({ error: "Error al iniciar el proceso en el servidor" });
     }
 });
 
-export { router }
+export { router };

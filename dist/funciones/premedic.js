@@ -77,7 +77,7 @@ function valor_Premedic(aportesOS, coeficiente, numHijos, precioAdultos, precioh
         var plan = new Object();
         plan.item_id = _id;
         plan.name = 'Premedic ' + nombre;
-        plan.precio = precio;
+        plan.precio = precioTotal;
         plan.valorLista = precios[j];
         plan.promoPorcentaje = promo;
         plan.promoDescuento = descPromo;

@@ -43,11 +43,13 @@ function valor_Prevencion(aporte_OS, coeficiente, grupo, precioPrevencion, group
     let grou = group;
     let array = [];
     let descOS = functions.calculodescOS(aportesOS[0], aportesOS[2], aportesOS[3], coeficiente, aportesOS[4], aportesOS[5], aportesOS[1]);
+    let descuento_total_porcentaje = 0.4;
     for (let j in precios) {
         let empresaPlan = [j][0];
         let _id = empresaPlan;
         let nombre = empresaPlan.substring(3);
         let precioTotal = precios[j];
+        let precioConBonificaciones = precioTotal * (1 - descuento_total_porcentaje);
         // console.log(aportesOS[0])
         // console.log(descOS)
         // console.log(precioTotal)
@@ -56,7 +58,7 @@ function valor_Prevencion(aporte_OS, coeficiente, grupo, precioPrevencion, group
         var plan = new Object();
         plan.item_id = _id;
         plan.name = 'Prevencion-Salud  ' + nombre;
-        plan.precio = precio;
+        plan.precio = precioConBonificaciones;
         plan.valorLista = precios[j];
         plan.aportesOS = descOS;
         array.push(plan);
