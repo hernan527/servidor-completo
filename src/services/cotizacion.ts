@@ -16,7 +16,7 @@ export const  calcularPrecio = async (req: Request, res: Response) => {
  try{
 const formCotizar = req.body;
 const {group,empresa_prepaga,edad_1,edad_2,numkids,plan_type,tipo,agree,aporteOS,sueldo,aporte,monoadic,cantAport,afinidad,bonAfinidad,supras,segvida,segvida1,region}=formCotizar;
-console.log('formCotizar  : '); console.log(formCotizar);
+// console.log('formCotizar  : '); console.log(formCotizar);
 let definirPrepaga = 'todas';
 if(empresa_prepaga ){
   definirPrepaga = empresa_prepaga;
@@ -35,7 +35,10 @@ interface PlanResultado {
 }
 let concatenarPrecios: PlanResultado[] = [];
 const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: string) => {
-// console.log('calcularGrupocorriendo' )
+console.log('calcularGrupocorriendo' )
+console.log('group' ,group)
+
+
   let edad1 = edad_1;
   // console.log('calcularGrupocorriendo edad1',edad1 )
 
@@ -71,8 +74,8 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
 };
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-console.log(' INICIANDO COTIZACION ')
-// console.log('grupo ', grupo)
+// console.log(' INICIANDO COTIZACION ')
+console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
   // console.log('beneficiariosF184 ', beneficiariosF184)
@@ -122,11 +125,14 @@ let edadIdPremedic = functions.productIdPremedic(edad_1, edad_2, tipo, numHijos,
 // <! ----------SWISS----------------------------------------------------------------------->
 let idTitularSwiss = functions.productIdSwiss(edad_1, tipo_IngresoPDMI,group);
 let idConyugeSwiss = functions.productIdSwiss(edad_2, tipo_IngresoPDMI,group);
-
+console.log('edad_1',edad_1)
+console.log('edad_2',edad_2)
+console.log('numHijos',numHijos)
+console.log('tipo_IngresoPDMI',tipo_IngresoPDMI)
 // <! ----------MEDIFE---------------------------------------------------->
-let idAdultosMedife = functions.productIdMedife(edad_1,edad_1, tipo_IngresoPDMI);
+let idAdultosMedife = functions.productIdMedife(edad_1,edad_2, tipo_IngresoPDMI);
 // <! ----------PREVENCION---------------------------------------------------->
-let idPrevencion = functions.productIdPrevencion(edad_1,edad_1, grupo[3], tipo_IngresoPDMI);
+let idPrevencion = functions.productIdPrevencion(edad_1,edad_2,numHijos,tipo_IngresoPDMI,group);
 // <! ----------DOCTORED---------------------------------------------------->
 let IdDoctored = functions.productIdDoctored(edad_1, edad_2, tipo_IngresoPDMI, grupo[3],group);
 // <! ----------AVALIAN---------------------------------------------------->
@@ -476,7 +482,7 @@ const argsSanCor = [
     prices.precioSanCorTitular.precios, 
     prices.precioConyugeSanCor.precios, 
     numhijo2, 
-    grupoFam, 
+    group, 
     afinidad, 
     bonAfinidad, 
     gen
@@ -711,10 +717,10 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        }
        return true;
        });
-  console.log(' FINALIZANDO COTIZACION ')
+  // console.log(' FINALIZANDO COTIZACION ');
 
-console.log('concatenarPrecios   :');
-console.log(concatenarPrecios);
+// console.log('concatenarPrecios   :');
+// console.log(concatenarPrecios);
  res.status(200).json(concatenarPrecios);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 

@@ -401,121 +401,94 @@ function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
 }
 // <!----------------------Funcion PRODUCT ID MEDIFE end----------------------------> 
 // <!----------------------Funcion PRODUCT ID PREVENCION SALUD start----------------------------> 
-function productIdPrevencion(edad_1, edad_2, hijos, tipoAsoc) {
-    let edadIdPrevencion = '';
-    let age2 = edad_2;
+export function productIdPrevencion(edad_1, edad_2, hijos, tipoAsoc) {
     let age = edad_1;
-    let kids = 'y' + hijos + 'H';
-    let tipo = tipoAsoc;
-    let grupoSiglaPrevencion = '';
-    let zona = 'Z4';
-    if (edad_2 === null) {
-        age2 = 0;
-    }
-    if (hijos === null || hijos === 0) {
-        kids = '';
-    }
+    let age2 = edad_2 || 0;
+    
+    // CORRECCIÓN: Siempre debe llevar 'y' + cantidad + 'H' (ej: y0H)
+    let kids = 'y' + (hijos || 0) + 'H'; 
+    
+    let zona = 'Z4'; 
+    let tipo = tipoAsoc; // 'D' o 'P'
+
+    // El mayor siempre manda para el rango
     if (age2 > age) {
-        age2 = age;
-        age = edad_2;
+        [age, age2] = [age2, age];
     }
-    ;
-    if (age2 >= 18) {
-        grupoSiglaPrevencion = 'MAT';
-    }
-    else {
-        grupoSiglaPrevencion = 'IND';
-    }
-    if (age <= 25) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '0-25';
-    }
-    else if (age <= 30 && age >= 26) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '26-30';
-    }
-    else if (age <= 35 && age >= 31) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '31-35';
-    }
-    else if (age <= 40 && age >= 36) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '36-40';
-    }
-    else if (age <= 45 && age >= 41) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '41-45';
-    }
-    else if (age <= 50 && age >= 46) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '46-50';
-    }
-    else if (age <= 55 && age >= 51) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '51-55';
-    }
-    else if (age <= 60 && age >= 56) {
-        edadIdPrevencion = tipo + zona + grupoSiglaPrevencion + kids + '56-60';
-    }
-    return edadIdPrevencion;
+
+    // Definición de Grupo
+    let grupoSigla = (age2 >= 18) ? 'MAT' : 'IND';
+
+    // Rango de edad (Ajustado a tu lista de 61-64, 65-70 y 71)
+    let rango = '';
+    if (age <= 25) rango = '0-25';
+    else if (age <= 30) rango = '26-30';
+    else if (age <= 35) rango = '31-35';
+    else if (age <= 40) rango = '36-40';
+    else if (age <= 45) rango = '41-45';
+    else if (age <= 50) rango = '46-50';
+    else if (age <= 55) rango = '51-55';
+    else if (age <= 60) rango = '56-60';
+    else if (age <= 64) rango = '61-64';
+    else if (age <= 70) rango = '65-70';
+    else rango = '71';
+
+    return `${tipo}${zona}${grupoSigla}${kids}${rango}`;
 }
 // <!----------------------Funcion PRODUCT ID PREVENCION SALUD end----------------------------> 
 // // <!----------------------Funcion PRODUCT ID DOCTORED start----------------------------> 
-function productIdDoctored(edad_1, edad_2, tipoAsoc, num_Hijos, group) {
-    let age2 = edad_2;
+export function productIdDoctored(edad_1, edad_2, tipoAsoc, num_Hijos, group) {
     let age = edad_1;
-    let hijos1y2 = num_Hijos;
-    let indOMat = "IND";
-    let rangoEtario = '18-25';
+    let age2 = edad_2 || 0;
+    let hijos1y2 = num_Hijos || 0;
     let tipo = tipoAsoc;
-    let idDoctored = 'doctored' + indOMat + tipoAsoc + rangoEtario + 'y' + hijos1y2 + 'h';
-    let idDoctoredHijo3 = 'doctored' + tipo + 'HIJO';
-    let idDoctoredAd = 'doctoredAD' + tipo + rangoEtario;
-    if (hijos1y2 > 2) {
-        hijos1y2 = 2;
-    }
-    else { }
-    if (tipo == 'I') {
-        tipo = 'P';
-    }
-    else if (tipo == 'M') {
-        tipo = 'D';
-    }
-    else { }
+    let indOMat = "IND";
+
+    // 1. Corregir Tipo (I -> P, M -> D)
+    if (tipo === 'I') tipo = 'P';
+    else if (tipo === 'M') tipo = 'D';
+
+    // 2. Limitar hijos a 2 para el ID principal (según tus resultados)
+    if (hijos1y2 > 2) hijos1y2 = 2;
+
+    // 3. Lógica de Grupos
     if (group === 1) {
         age2 = 0;
         hijos1y2 = 0;
-    }
-    else if (group === 2) {
+    } else if (group === 2) {
         age2 = 0;
-    }
-    else if (group === 3) {
+    } else if (group === 3) {
         hijos1y2 = 0;
     }
-    else { }
-    if (edad_2 === null) {
-        age2 = 0;
-    }
-    if (age2 > age) {
-        age2 = age;
-        age = edad_2;
+
+    // 4. Determinar si es MAT y ordenar edades
+    if (age2 > 0) {
         indOMat = 'MAT';
+        if (age2 > age) {
+            [age, age2] = [age2, age];
+        }
     }
-    ;
-    if (age <= 25) {
-        rangoEtario = '18-25y';
-    }
-    else if (age <= 35 && age >= 26) {
-        rangoEtario = '25-35y';
-    }
-    else if (age <= 45 && age >= 36) {
-        rangoEtario = '35-45y';
-    }
-    else if (age <= 55 && age >= 46) {
-        rangoEtario = '46-55y';
-    }
-    else if (age <= 60 && age >= 56) {
-        rangoEtario = '56-60y';
-    }
-    else if (age <= 69 && age >= 61) {
-        rangoEtario = '61-69y';
-    }
-    else if (age <= 79 && age >= 70) {
-        rangoEtario = '70-79y';
-    }
+
+    // 5. Determinar Rango Etario (Sin la 'y' al final para ADP)
+    let rangoEtario = '';
+    if (age <= 25) rangoEtario = '18-25';
+    else if (age <= 35) rangoEtario = '25-35';
+    else if (age <= 45) rangoEtario = '35-45';
+    else if (age <= 55) rangoEtario = '46-55';
+    else if (age <= 60) rangoEtario = '56-60';
+    else if (age <= 69) rangoEtario = '61-69';
+    else rangoEtario = '70-79';
+
+    // 6. Construir IDs finales (AHORA que tenemos todos los datos procesados)
+    // El ID principal lleva la 'y' antes de la 'h' (ej: 18-25y0h)
+    let idDoctored = `doctored${indOMat}${tipo}${rangoEtario}y${hijos1y2}h`;
+    
+    // ID para el tercer hijo en adelante
+    let idDoctoredHijo3 = `doctored${tipo}HIJO`;
+    
+    // ID adicional (AD) - Nota que no lleva la 'y' después del rango
+    let idDoctoredAd = `doctoredAD${tipo}${rangoEtario}`;
+
     return [idDoctored, idDoctoredHijo3, idDoctoredAd];
 }
 // <!----------------------Funcion PRODUCT ID DOCTORED END----------------------------> 

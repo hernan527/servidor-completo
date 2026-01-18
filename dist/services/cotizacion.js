@@ -46,8 +46,7 @@ const calcularPrecio = async (req, res) => {
     try {
         const formCotizar = req.body;
         const { group, empresa_prepaga, edad_1, edad_2, numkids, plan_type, tipo, agree, aporteOS, sueldo, aporte, monoadic, cantAport, afinidad, bonAfinidad, supras, segvida, segvida1, region } = formCotizar;
-        console.log('formCotizar  : ');
-        console.log(formCotizar);
+        // console.log('formCotizar  : '); console.log(formCotizar);
         let definirPrepaga = 'todas';
         if (empresa_prepaga) {
             definirPrepaga = empresa_prepaga;
@@ -91,7 +90,7 @@ const calcularPrecio = async (req, res) => {
         };
         // Llamada a la función para obtener el grupo
         const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-        console.log(' INICIANDO COTIZACION ');
+        // console.log(' INICIANDO COTIZACION ')
         // console.log('grupo ', grupo)
         const porcentaje = {};
         const beneficiariosF184 = cantAport;
@@ -652,9 +651,9 @@ const calcularPrecio = async (req, res) => {
             }
             return true;
         });
-        console.log(' FINALIZANDO COTIZACION ');
-        console.log('concatenarPrecios   :');
-        console.log(concatenarPrecios);
+        // console.log(' FINALIZANDO COTIZACION ');
+        // console.log('concatenarPrecios   :');
+        // console.log(concatenarPrecios);
         res.status(200).json(concatenarPrecios);
     }
     catch (e) {

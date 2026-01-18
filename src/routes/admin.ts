@@ -6,6 +6,7 @@ const router = Router();
 /**
  * Endpoint para disparar la carga masiva
  * URL: .../generar-maestro?key=therollingstones&fecha_corte=2026-01-14T23:59:59
+ * curl http://localhost:3/generar-maestro?key=therollingstones&
  */
 router.post('/generar-maestro', async (req, res) => {
     try {
