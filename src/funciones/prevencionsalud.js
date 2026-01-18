@@ -7,9 +7,9 @@ export function valor_Prevencion(
     precioPrevencion,
     group
 ){
-console.log('precioPrevencion',precioPrevencion);
-console.log('grupo',grupo);
-console.log('group',group);
+// console.log.log('precioPrevencion',precioPrevencion);
+// console.log.log('grupo',grupo);
+// console.log.log('group',group);
 
   
 
@@ -36,10 +36,10 @@ let aportesOS = aporte_OS
  // console.log(aportesOS[0])
  // console.log(descOS)
  // console.log(precioTotal)
- console.log('empresaPlan',empresaPlan);
-console.log('precioTotal',precioTotal);
-console.log('precioConBonificaciones',nombre);
-console.log('nombre',precioConBonificaciones);
+ // console.log.log('empresaPlan',empresaPlan);
+// console.log.log('precioTotal',precioTotal);
+// console.log.log('precioConBonificaciones',nombre);
+// console.log.log('nombre',precioConBonificaciones);
 
  
     //funcion para que impacten los descuentos y bonificaciones

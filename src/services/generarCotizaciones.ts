@@ -5,8 +5,8 @@ import { createObjectCsvWriter as createCsvWriter } from 'csv-writer';
 import { calcularPrecio } from './cotizacion';
 
 export const procesarCotiSimple = async () => {
-    const INPUT_PATH = path.join(process.cwd(), 'src', 'assets', 'data', 'datos_tercertramo-servidor-1-PC.csv');
-    const OUTPUT_CSV = path.join(process.cwd(), 'src', 'assets', 'data', 'resultado_tercertramo-servidor-1-PC.csv');
+    const INPUT_PATH = path.join(process.cwd(), 'src', 'assets', 'data', 'todasLasconfiguracionesdeedadesParticulares.csv');
+    const OUTPUT_CSV = path.join(process.cwd(), 'src', 'assets', 'data', 'prevencionParticular.csv');
     const LOG_FILE = path.join(process.cwd(), 'logs', 'seguimiento.log');
 
     if (!fs.existsSync(path.dirname(LOG_FILE))) fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
@@ -45,7 +45,7 @@ export const procesarCotiSimple = async () => {
 
         try {
             await calcularPrecio({ 
-                body: { ...fila, group: +fila.group, edad_1: +fila.edad_1, edad_2: +(fila.edad_2 || 0), numkids: +(fila.hijos || 0), tipo: String(fila.tipo || "D"), empresa_prepaga: 'todas' } 
+                body: { ...fila, group: +fila.group, edad_1: +fila.edad_1, edad_2: +(fila.edad_2 || 0), numkids: +(fila.hijos || 0), tipo: String(fila.tipo || "P"), empresa_prepaga: 'prevencion' } 
             } as any, { 
                 json: (d: any) => { fila.respuesta = JSON.stringify(d); return d; }, 
                 status: function() { return this; } 

@@ -1,11 +1,11 @@
 export function grupoFamiliar(age0, age1, kids,group) {
-	console.log('grupoFamiliar',grupoFamiliar)
-		console.log('age0',age0)
+	// console.log('grupoFamiliar',grupoFamiliar)
+	// 	console.log('age0',age0)
 
-			console.log('age1',age1)
+	// 		console.log('age1',age1)
 
-				console.log('kids',kids)
-	console.log('group',group)
+	// 			console.log('kids',kids)
+	// console.log('group',group)
 
     let edad0 = age0;
     let edad1 = age1;
@@ -26,7 +26,7 @@ export function grupoFamiliar(age0, age1, kids,group) {
 
 	}else{}
 
-	console.log('grupoFam',grupoFam)
+	// console.log('grupoFam',grupoFam)
 
     if (kids === null) {
         numhijos = 0;
@@ -367,12 +367,12 @@ export function productIdMedife(edad_1, edad_2, tipoAsoc, group) {
 // <!----------------------Funcion PRODUCT ID PREVENCION SALUD start----------------------------> 
 
 export function productIdPrevencion(edad_1, edad_2, hijos, tipoAsoc,group) {
-	console.log('preveencion ID');
-		console.log('edad_1',edad_1);
-	console.log('edad_2',edad_2);
-	console.log('hijos',hijos);
+	// console.log('preveencion ID');
+	// 	console.log('edad_1',edad_1);
+	// console.log('edad_2',edad_2);
+	// console.log('hijos',hijos);
 
-		console.log('tipoAsoc',tipoAsoc);
+		// console.log('tipoAsoc',tipoAsoc);
 
     let age = edad_1;
     let age2 = edad_2 || 0;
@@ -386,11 +386,11 @@ export function productIdPrevencion(edad_1, edad_2, hijos, tipoAsoc,group) {
         [age, age2] = [age2, age];
     }
 
-			console.log('kids',kids);
+			// console.log('kids',kids);
     // Definir si es Matrimonio o Individual
     // Si hay una segunda persona mayor de 18, es MAT
     let grupoSigla = (group === 3 || group === 4) ? 'MAT' : 'IND';
-			console.log('grupoSigla',grupoSigla);
+			// console.log('grupoSigla',grupoSigla);
 
     // Determinar rango de edad exacto según tu lista
     let rango = '';
@@ -405,8 +405,8 @@ export function productIdPrevencion(edad_1, edad_2, hijos, tipoAsoc,group) {
     else if (age <= 64) rango = '61-64';
     else if (age <= 70) rango = '65-70';
     else rango = '71';
-	console.log('rango',rango);
-console.log('prevencion ID',`${tipo}${zona}${grupoSigla}${kids}${rango}`);
+// 	console.log('rango',rango);
+// console.log('prevencion ID',`${tipo}${zona}${grupoSigla}${kids}${rango}`);
     // Retorna el ID sin el prefijo "prevencion"
     return `${tipo}${zona}${grupoSigla}${kids}${rango}`;
 }

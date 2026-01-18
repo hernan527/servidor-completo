@@ -6,7 +6,7 @@ export function valor_SanCor(aportesOS, coeficiente, edad_1, edad_2, numHijos, p
     let preciosConyuge = precios_Conyuge; 
     let grupoFam = grupo_Fam;
     let sumaConyuge = true;
-    console.log('grupoFam',grupoFam)
+    // console.log.log('grupoFam',grupoFam)
     
     // 1. Lógica de limpieza según grupo (Aseguramos objetos vacíos, no ceros)
     if (grupoFam == 1) { // Solo Titular
@@ -19,14 +19,14 @@ export function valor_SanCor(aportesOS, coeficiente, edad_1, edad_2, numHijos, p
     } else if (grupoFam == 3) { // Matrimonio
         hijos = 0;
     }
-     console.log('sumaConyuge',sumaConyuge)
+     // console.log.log('sumaConyuge',sumaConyuge)
 
     let descOS = functions.calculodescOS(aportesOS[0], aportesOS[2], aportesOS[3], coeficiente, aportesOS[4], aportesOS[5], aportesOS[1]);
     let array = [];
     let promocion = 0.50;
     let con_afinidad = true;
-     console.log('preciosConyuge',preciosConyuge)
-     console.log('precio_Titular',precio_Titular)
+     // console.log.log('preciosConyuge',preciosConyuge)
+     // console.log.log('precio_Titular',precio_Titular)
 
     // 2. Sumar Adultos (Solo si hay cónyuge real)
     let precio_adultos_Sancor = (sumaConyuge) 
@@ -34,7 +34,7 @@ export function valor_SanCor(aportesOS, coeficiente, edad_1, edad_2, numHijos, p
             ...acc, [key]: parseInt(acc[key] || 0) + parseInt(value) 
           }), { ...precio_Titular })
         : { ...precio_Titular };
-     console.log('precio_adultos_Sancor',precio_adultos_Sancor)
+     // console.log.log('precio_adultos_Sancor',precio_adultos_Sancor)
 
     // 3. Sumar Hijos
     let precios = {};
