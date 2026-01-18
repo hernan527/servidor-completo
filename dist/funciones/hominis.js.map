@@ -1,1 +1,0 @@
-{"version":3,"file":"hominis.js","sourceRoot":"","sources":["../../src/funciones/hominis.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEA,sCAQC;AAVD,uDAAyC;AAEzC,SAAgB,aAAa,CAAC,QAAQ,EAAE,WAAW,EAAE,KAAK,EAAE,WAAW,EAAE,MAAM;IAE3E,IAAI,UAAU,GAAG,QAAQ,CAAC;IAC1B,IAAI,gBAAgB,GAAG,WAAW,CAAC;IACnC,IAAI,KAAK,GAAG,KAAK,CAAC;IAClB,IAAI,WAAW,GAAG,MAAM,CAAC;AAG7B,CAAC"}
