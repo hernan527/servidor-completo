@@ -1,4 +1,4 @@
-// <!----------------------Funcion VALOR DEL PLAN PREMEDIC start---------------------------->
+// <!----------------------Funcion VALOR DEL PLAN DOCTORED start---------------------------->
 import * as functions from './functions';
 
 
@@ -17,39 +17,40 @@ let hijos = numkids;
 let precio_Grupo = precioGrupo;
 let precio_3hijo = precioHijo3;
 let group = grupo;
-// console.log('aporteOS   :' + aporteOS);
-// console.log('coeficiente   :' + coeficiente);
-// console.log('hijos   :' + hijos);
-// console.log('precio_Grupo   :' + precio_Grupo);
-// console.log('precio_3hijo   :' + precio_3hijo);
-// console.log('group   :' + group);
+// galenoPIND25y0h('aporteOS   :',aporteOS);
+// galenoPIND25y0h('coeficiente   :',coeficiente);
+// galenoPIND25y0h('hijos   :',hijos);
+// galenoPIND25y0h('precio_Grupo   :',precio_Grupo);
+// galenoPIND25y0h('precio_3hijo   :', precio_3hijo);
+// galenoPIND25y0h('group   :', group);
 if(group === 1 || group === 3 ){
     hijos = 0;
     precio_3hijo = 0;
 }
-if(group === 1 || group === 2 ){
-    hijos = 0;
-    precio_3hijo = 0;
-}
+
 
 let precios = {};
 let descOS = functions.calculodescOS(aporteOS[0],aporteOS[2],aporteOS[3],coeficiente,aporteOS[4],aporteOS[5],aporteOS[1])
 let array = [];
 
-    if (hijos > 0 ) {
-        precios = Object.entries(precioHijo3).reduce((acc, [key, value]) => // tres hijos o mas
-            ({
-                ...acc,
-                [key]: parseInt((acc[key]) || 0) + parseInt(value * hijos)
-            }), {
-                ...precio_Grupo
-
-            });
-    } else {
-        precios = precio_Grupo;
-    }
+  if (hijos > 2) {
+    const cantidadExcedente = hijos - 2; // Ejemplo: Si son 3 hijos, excedente es 1
+    
+    precios = Object.entries(precio_3hijo).reduce((acc, [key, value]) => {
+        // galenoPIND25y0h(`Plan: ${key} | Precio Grupo: ${acc[key]} | Sumando: ${value} x ${cantidadExcedente}`);
+        
+        return {
+            ...acc,
+            // Multiplicamos solo por los hijos que sobran de los primeros 2
+            [key]: Number(acc[key] || 0) + (Number(value) * cantidadExcedente)
+        };
+    }, { ...precio_Grupo });
+} else {
+    precios = precio_Grupo;
+}
+    // galenoPIND25y0h('preciosgroup   :', precios);
 //Funcion para el calculo de aportes
-//	<!-----------------------Bucle PREMEDIC start------------------------>
+//	<!-----------------------Bucle DOCTORED start------------------------>
     for ( let j in precios) {
         let empresaPlan = [j][0];
 
@@ -73,12 +74,12 @@ let array = [];
                         array.push(plan);
                     
                     }
-    //	<!-----------------------Bucle PREMEDIC end------------------------>								
-    // console.log( 'array PREMEDIC')	
-    // console.log(array)							
+    //	<!-----------------------Bucle DOCTORED end------------------------>								
+    // // galenoPIND25y0h( 'array DOCTORED')	
+    // // galenoPIND25y0h(array)							
                     
     return array
 }			
-// <!----------------------Funcion VALOR DEL PLAN PREMEDIC end---------------------------->
+// <!----------------------Funcion VALOR DEL PLAN DOCTORED end---------------------------->
 
 

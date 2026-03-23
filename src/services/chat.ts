@@ -13,50 +13,43 @@ let clinicasPorRegiones: { [key: string]: Clinicas[] } = {};
  * Asume que 'ubicacion[0].region' siempre existe.
  */
 async function obtenerRegionesDisponibles() {
-  // Buscamos regiones en el primer subdocumento de ubicación (asumiendo que es la principal)
-  // Utilizamos la notación de Mongoose 'ubicacion.0.region' para acceder directamente al campo.
-  const regiones = await ClinicasModel.distinct('ubicacion.0.region'); 
+  const regiones = await ClinicasModel.distinct('ubicaciones.region'); 
   return regiones;
 }
 
 /**
- * Organiza las clínicas por región. Asume que 'ubicacion[0]' es la ubicación principal válida.
+ * Organiza las clínicas por región manejando el array de objetos.
  */
 const organizarClinicasPorRegiones = async () => {
-  // 1. Obtiene la lista de todas las regiones disponibles
   regiones = await obtenerRegionesDisponibles();
 
-  // Inicializa un objeto para cada región
+  // Limpiar objeto de caché
+  clinicasPorRegiones = {};
   for (const region of regiones) {
-    clinicasPorRegiones[region] = [];
+    if (region) clinicasPorRegiones[region] = [];
   }
 
-  // 2. Realiza una consulta a la base de datos para obtener todas las clínicas
   const clinicas = await ClinicasModel.find({}).lean<Clinicas[]>(); 
 
-  // 3. Organiza las clínicas por región, usando solo la ubicación principal
   for (const clinica of clinicas) {
-    const ubicaciones = clinica.ubicacion; // Array de ubicaciones
-
-    // ----------------------------------------------------
-    // LÓGICA SIMPLIFICADA: 
-    // Asumimos que ubicaciones[0] existe y tiene la propiedad 'region'.
-    // ----------------------------------------------------
     try {
-      // Accede directamente a la ubicación principal (posición 0)
-      const ubicacionPrincipal = ubicaciones;
+      // 1. Accedemos al nuevo nombre en plural
+      const listaUbicaciones = clinica.ubicaciones; 
 
-      // Ahora simplemente usamos la región de la primera ubicación
-      const region = ubicacionPrincipal[0].region;
-      
-      // Agrega la clínica a la caché de la región correspondiente
-      if (clinicasPorRegiones[region]) {
-        clinicasPorRegiones[region].push(clinica);
+      // 2. Verificamos que sea un array y tenga al menos un elemento
+      if (Array.isArray(listaUbicaciones) && listaUbicaciones.length > 0) {
+        const region = listaUbicaciones[0].region;
+        
+        if (region && clinicasPorRegiones[region]) {
+          clinicasPorRegiones[region].push(clinica);
+        }
+      } else {
+        // Log opcional para detectar clínicas sin datos geográficos
+        // console.warn(`Clínica ${clinica.nombre} no tiene array de ubicaciones.`);
       }
 
     } catch (e) {
-      // Si a pesar de la regla de negocio, falta la ubicación[0] o la región, se loguea.
-      console.warn(`[CHAT SERVICE] Documento de clínica saltado por ubicación faltante o inválida en [0]: ${clinica.nombre || clinica.item_id}`, e);
+      console.warn(`[CHAT SERVICE] Error procesando región: ${clinica.nombre}`, e);
     }
   }
   return clinicasPorRegiones;

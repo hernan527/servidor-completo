@@ -279,40 +279,51 @@ export function productIdOmint(anios, tipoAsoc, miembro,group) {
 
 
 // <!----------------------Funcion PRODUCT ID SWISS start---------------------------->        
-export function productIdSwiss(anios, tipoAsoc,group) {
-	let edadID = '';
-	let tipo = tipoAsoc;
-	let edad = anios;
-	if(group === 1 )
-{
-	edad=0;
-}else if(group === 2)
-{
-	edad=0;
-}else{}
+export function productIdSwiss(anios, tipoAsoc, group) {
+    console.log('--- Inicio productIdSwiss ---');
+    console.log('Inputs iniciales -> anios:', anios, '| tipoAsoc:', tipoAsoc, '| group:', group);
 
-	
+    let edadID = '';
+    let tipo = tipoAsoc;
+    let edad = anios;
 
-	if (edad >= 18 && edad <= 25) {
-		edadID = tipo + 25;
-	} else if (edad >= 26 && edad <= 35) {
-		edadID = tipo + 35;
-	} else if (edad >= 36 && edad <= 40) {
-		edadID = tipo + 40;
-	} else if (edad >= 41 && edad <= 45) {
-		edadID = tipo + 45;
-	} else if (edad >= 46 && edad <= 50) {
-		edadID = tipo + 50;
-	} else if (edad >= 51 && edad <= 55) {
-		edadID = tipo + 55;
-	} else if (edad >= 56 && edad <= 60) {
-		edadID = tipo + 60;
-	} else if (edad >= 61 && edad <= 63) {
-		edadID = tipo + 63;
-	} else {
-		edadID = tipo + 60;
-	}
-return edadID
+    // Lógica de grupos
+    if (group === 1) {
+        edad = 0;
+        console.log('Grupo 1 detectado: Forzando edad a 0');
+    } else if (group === 2) {
+        edad = 0;
+        console.log('Grupo 2 detectado: Forzando edad a 0');
+    } else {
+        console.log('Sin grupo especial: Se mantiene edad original:', edad);
+    }
+
+    // Lógica de asignación de edadID
+    if (edad >= 18 && edad <= 25) {
+        edadID = tipo + 25;
+    } else if (edad >= 26 && edad <= 35) {
+        edadID = tipo + 35;
+    } else if (edad >= 36 && edad <= 40) {
+        edadID = tipo + 40;
+    } else if (edad >= 41 && edad <= 45) {
+        edadID = tipo + 45;
+    } else if (edad >= 46 && edad <= 50) {
+        edadID = tipo + 50;
+    } else if (edad >= 51 && edad <= 55) {
+        edadID = tipo + 55;
+    } else if (edad >= 56 && edad <= 60) {
+        edadID = tipo + 60;
+    } else if (edad >= 61 && edad <= 63) {
+        edadID = tipo + 63;
+    } else {
+        edadID = tipo + 60; // Caso por defecto para fuera de rango o edad < 18
+        console.log('Edad fuera de rangos específicos o menor a 18. Aplicando default (tipo + 60)');
+    }
+
+    console.log('Resultado Final -> edadID:', edadID);
+    console.log('--- Fin productIdSwiss ---');
+    
+    return edadID;
 }
 // <!----------------------Funcion PRODUCT ID END start----------------------------> 
 
@@ -791,6 +802,7 @@ export function productIdAvalian(anios1, anios2, tipoAsoc, group) {
     idHijo25 = "avalian" +  "Z" + zonaComercial[0] + tipo + "25";
 
 	ids.push(idTitular, idConyuge, idHijo3, idHijo2, idHijo1, idHijo25);
+	console.log('ids avalian', ids)
 
     // Return array of ids
     return ids;
@@ -852,3 +864,39 @@ export function productIdHominis(edad_1, edad_2, tipoAsoc, numHijos, group) {
 }
 
 // <!----------------------Funcion PRODUCT ID HOMINIS end----------------------------> 
+
+// <!----------------------Funcion PRODUCT ID SALUD CENTRAL inicio----------------------------> 
+
+
+export function getSaludCentralIds(edad1,edad2) {
+    const P = "saludcentral"; // La constante P que no cambia
+    let edad_1 = edad1;
+	let edad_2 = edad2;
+	let idHijo1 = 'saludcentral1H';
+	let idHijo2 ='saludcentral2H' ;
+
+    // Lógica para que 'age' siempre sea el mayor de los dos (titular/conyuge)
+    if (edad_2 > edad_1) {
+        [edad_1, edad_2] = [edad_2, edad_1]; // Swap elegante
+    }
+    const retornarRango = (e) => {
+        if (e >= 18 && e <= 29) return "18-29";
+        if (e >= 30 && e <= 35) return "30-35";
+        if (e >= 36 && e <= 40) return "36-40";
+        if (e >= 41 && e <= 50) return "41-50";
+        if (e >= 51 && e <= 60) return "51-60";
+        if (e >= 61 && e <= 65) return "61-65";
+        if (e >= 66 && e <= 70) return "66-70";
+        if (e >= 71 && e <= 75) return "71-75";
+        if (e >= 76 && e <= 79) return "76-79";
+        if (e >= 80 && e <= 85) return "80-85";
+        return null;
+    };
+
+    const idTitular =  `${P}${retornarRango(edad_1)}`;
+	
+    
+    return [idTitular,idHijo1,idHijo1];
+}
+
+// <!----------------------Funcion PRODUCT ID SALUD CENTRAL end----------------------------> 

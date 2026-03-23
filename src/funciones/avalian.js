@@ -1,5 +1,6 @@
 import * as functions from './functions';
 
+
 export function valor_Avalian(
     aporteOS,        // Array [tipo_Ingreso, beneficiarios, sueldo, etc.]
     coeficiente,     
@@ -12,10 +13,17 @@ export function valor_Avalian(
     Hijo3,           
     numKids          
 ) {
-    // console.log("--- INICIO CÁLCULO AVALIAN ---");
+    console.log("--- INICIO CÁLCULO AVALIAN ---");
     let array = [];
     let tipo_IngresoPDMI = aporteOS[0].trim(); 
-    
+        console.log("Titular"); console.log(Titular);
+    console.log("Conyuge"); console.log( Conyuge);
+    console.log("Hijo1"); console.log( Hijo1);
+        console.log("Hijo1"); console.log( Hijo1);
+    console.log("Hijo2"); console.log( Hijo2);
+    console.log("Hijo3"); console.log( Hijo3);
+
+
     // 1. Definir porcentajes base según tipo de ingreso
     let bonificacion_promocion = 0;
     let cuota_Social_Pct = 0;
@@ -31,35 +39,38 @@ export function valor_Avalian(
     let bonificacion_forma_de_pago = 0.10; 
     let descuento_total_porcentaje = bonificacion_promocion + bonificacion_forma_de_pago;
 
-    // console.log(`Tipo Ingreso: ${tipo_IngresoPDMI} | Desc. Promoción: ${bonificacion_promocion} | Desc. Pago: ${bonificacion_forma_de_pago}`);
+    console.log(`Tipo Ingreso: ${tipo_IngresoPDMI} | Desc. Promoción: ${bonificacion_promocion} | Desc. Pago: ${bonificacion_forma_de_pago}`);
 
     // 2. Cálculo de Descuento Obra Social
     let descOS = functions.calculodescOS(
         aporteOS[0], aporteOS[2], aporteOS[3], 
         coeficiente, aporteOS[4], aporteOS[5], aporteOS[1]
     );
-    // console.log("Descuento OS calculado:", descOS);
+    console.log("Descuento OS calculado"); console.log( descOS);
 
     // 3. Sumar el Grupo Familiar (Precios Brutos)
     let preciosBrutos = { ...Titular };
+    console.log(`valorBruto adulto titular: ${preciosBrutos}`);
 
-    if (Conyuge && (grupo === 2 || grupo === 3)) {
+    if (Conyuge && (grupo === 3 || grupo === 4)) {
         preciosBrutos = sumObjects(preciosBrutos, Conyuge);
     }
+    console.log(`valorBruto adulto titular y conyuge: ${preciosBrutos}`);
 
     if (numKids > 0) {
         if (numKids >= 1) preciosBrutos = sumObjects(preciosBrutos, Hijo1);
-        if (numKids >= 2) preciosBrutos = sumObjects(preciosBrutos, Hijo2);
+        if (numKids >= 2) preciosBrutos = sumObjects(preciosBrutos, Hijo1, Hijo2);
         if (numKids >= 3) {
-            let cantidadHijosH3 = numKids - 2; 
-            preciosBrutos = sumObjects(preciosBrutos, Hijo3, cantidadHijosH3);
+            let restoHijosH3 = ( numKids - 2 ) * Hijo3; 
+            preciosBrutos = sumObjects(preciosBrutos, Hijo1, Hijo2,  restoHijosH3);
         }
     }
-    // console.log("Precios Brutos Totales por plan:", preciosBrutos);
+    console.log("Precios Brutos Totales por plan"); console.log( preciosBrutos);
 
     // 4. Bucle de Cálculo Final
     for (let planId in preciosBrutos) {
         let valorBruto = preciosBrutos[planId];
+    console.log(`valorBruto: ${valorBruto}`);
 
         // A. Aplicar Descuento Sumado
         let precioConBonificaciones = valorBruto * (1 - descuento_total_porcentaje);
@@ -73,7 +84,7 @@ export function valor_Avalian(
         // D. Restar Aportes Obra Social
         let precioFinal = functions.final(tipo_IngresoPDMI, descOS, precioAntesDeOS);
 
-        // console.log(`Plan: ${planId} | Bruto: ${valorBruto} | Subtotal: ${precioAntesDeOS.toFixed(2)} | Final: ${precioFinal.toFixed(2)}`);
+        console.log(`Plan: ${planId} | Bruto: ${valorBruto} | Subtotal: ${precioAntesDeOS.toFixed(2)} | Final: ${precioFinal.toFixed(2)}`);
 
         array.push({
             item_id: planId,
@@ -84,7 +95,7 @@ export function valor_Avalian(
         });
     }
 
-    // console.log("--- FIN CÁLCULO AVALIAN ---");
+    console.log("--- FIN CÁLCULO AVALIAN ---");
     return array;
 }
 

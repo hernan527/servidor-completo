@@ -5,9 +5,24 @@ import { createObjectCsvWriter as createCsvWriter } from 'csv-writer';
 import { calcularPrecio } from './cotizacion';
 
 export const procesarCotiSimple = async () => {
-    const INPUT_PATH = path.join(process.cwd(), 'src', 'assets', 'data', 'todasLasconfiguracionesdeedadesParticulares.csv');
-    const OUTPUT_CSV = path.join(process.cwd(), 'src', 'assets', 'data', 'prevencionParticular.csv');
+    // 1. DEFINIR LAS RUTAS (Asegurate de que LOG_FILE no esté comentada)
+    const INPUT_PATH = path.join(process.cwd(), 'src', 'assets', 'data', 'datacotizacion', 'datos-desregulados-2234021-2448031-servidor5.csv');
+    const OUTPUT_CSV = path.join(process.cwd(), 'src', 'assets', 'data', 'RESPUESTAS-COTIZACION', 'REPUESTAS-DESREGULADO-2234021-2448031-servidor5.csv');
+    
+    // ESTA ES LA LÍNEA QUE TE FALTA:
     const LOG_FILE = path.join(process.cwd(), 'logs', 'seguimiento.log');
+
+    // 2. CREAR CARPETAS SI NO EXISTEN
+    // Ahora path.dirname(LOG_FILE) ya no dará error porque LOG_FILE existe
+    if (!fs.existsSync(path.dirname(LOG_FILE))) {
+        fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
+    }
+    
+    if (!fs.existsSync(path.dirname(OUTPUT_CSV))) {
+        fs.mkdirSync(path.dirname(OUTPUT_CSV), { recursive: true });
+    }
+
+    // ... el resto de tu código de logs y procesamiento ...
 
     if (!fs.existsSync(path.dirname(LOG_FILE))) fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
 
@@ -45,7 +60,7 @@ export const procesarCotiSimple = async () => {
 
         try {
             await calcularPrecio({ 
-                body: { ...fila, group: +fila.group, edad_1: +fila.edad_1, edad_2: +(fila.edad_2 || 0), numkids: +(fila.hijos || 0), tipo: String(fila.tipo || "P"), empresa_prepaga: 'prevencion' } 
+                body: { ...fila, group: +fila.group, edad_1: +fila.edad_1, edad_2: +(fila.edad_2 || 0), numkids: +(fila.hijos || 0), tipo: String(fila.tipo || "D"), empresa_prepaga: 'todas' } 
             } as any, { 
                 json: (d: any) => { fila.respuesta = JSON.stringify(d); return d; }, 
                 status: function() { return this; } 

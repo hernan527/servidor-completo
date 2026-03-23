@@ -16,4 +16,5 @@ export * from './luispasteur';
 export * from './ras';
 export * from './cristal';
 export * from './hominis';
+export * from './saludcentral';
 export * from './ids';

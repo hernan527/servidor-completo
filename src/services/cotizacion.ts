@@ -74,7 +74,7 @@ const calcularGrupo = (edad_1: number, edad_2: number, numkids: number, group: s
 };
 // Llamada a la función para obtener el grupo
 const grupo = calcularGrupo(edad_1, edad_2, numkids, group);
-console.log(' INICIANDO COTIZACION ')
+// console.log(' INICIANDO COTIZACION ')
 // console.log('grupo ', grupo)
   const porcentaje: { [nombreEmpresa: string]: number } = {};
   const beneficiariosF184 = cantAport;
@@ -117,14 +117,14 @@ if (grupo[0] == 2) {
   =idSancor[0]}
 // console.log('idSancorConyuge ',idSancorConyuge)
 // <! -----------------------------OMINT---------------------------------------------------->
-let idOmint =  functions.productIdOmint(edad_1, tipo, 'titular',group);
+let idOmint =  functions.productIdOmint(edad_1, tipo, 'titular',group); // console.log(idOmint);// console.log("idOmint");
 // <! -----------------------------GALENO--------------------------------------------------->
-let idGaleno = functions.productIdGaleno(edad_1, edad_2, tipo, numHijos,group);
+let idGaleno = functions.productIdGaleno(edad_1, edad_2, tipo, numHijos,group);// console.log(idGaleno);// console.log("idGaleno");
 // <! ----------PREMEDIC-------------------------------------------------------------------->
-let edadIdPremedic = functions.productIdPremedic(edad_1, edad_2, tipo, numHijos,group);
+let edadIdPremedic = functions.productIdPremedic(edad_1, edad_2, tipo, numHijos,group);// console.log(edadIdPremedic);// console.log("edadIdPremedic");
 // <! ----------SWISS----------------------------------------------------------------------->
-let idTitularSwiss = functions.productIdSwiss(edad_1, tipo_IngresoPDMI,group);
-let idConyugeSwiss = functions.productIdSwiss(edad_2, tipo_IngresoPDMI,group);
+let idTitularSwiss = functions.productIdSwiss(edad_1, tipo_IngresoPDMI,group);// console.log(idTitularSwiss);// console.log("idTitularSwiss");
+let idConyugeSwiss = functions.productIdSwiss(edad_2, tipo_IngresoPDMI,group);// console.log(idConyugeSwiss);// console.log("idConyugeSwiss");
 // console.log('edad_1',edad_1)
 // console.log('edad_2',edad_2)
 // console.log('numHijos',numHijos)
@@ -183,8 +183,8 @@ async function fetchPrices() {
 
   const productQueries = [
       { variable: 'priceAdultosPr', id: 'premedic' + functions.productIdPremedic(edad_1, edad_2, tipo, numHijos, group) },
-      { variable: 'pricePrHijoMenir1', id: 'premedic' + tipo + 'AD-1anio' },
-      { variable: 'pricePrHijoMenir25', id: 'premedic' + tipo + 'AD-25' },
+      { variable: 'pricePrHijoMenor1', id: 'premedic' + tipo + 'AD-1anio' },
+      { variable: 'pricePrHijoMenor25', id: 'premedic' + tipo + 'AD-25' },
       { variable: 'precioTitularSwiss', id: 'swiss' + idTitularSwiss },
       { variable: 'precioConyugeSwiss', id: 'swiss' + idConyugeSwiss },
       { variable: 'precioHijo1Swiss', id: 'swiss' + tipo_IngresoPDMI + '1h' },
@@ -346,7 +346,7 @@ async function fetchPrices() {
 
 // async function cargarPrecios(lista: string[][], prices: { [x: string]: (Document<unknown, {}, Precios, {}, DefaultSchemaOptions> & Precios & Required<{ _id: string; }> & { __v: number; }) | { precios: number; }; }) {
 //     for (const [nombre, id] of lista) {
-//       // console.log('lista',lista)
+//       console.log('lista',lista)
 //         prices[nombre] = await buscarPrecio(id);
 //     }
 // }
@@ -406,7 +406,7 @@ const precios = {};
 
 // <! -----------------------------ID PREMEDIC START---------------------------------------------------->
 function hayPreciosValidos(precios: any[]): boolean {
-  // // console.log("Verificando precios:", precios); // Para depuración
+  // console.log("Verificando precios:", precios); // Para depuración
   
   // Verificamos que los precios no sean null ni undefined
   return precios.every(p => p !== null && p !== undefined);
@@ -449,9 +449,9 @@ try {
 try {
   if (hayPreciosValidos([
   prices.priceAdultosPr.precios,
-  prices.pricePrHijoMenir25.precios,
-  prices.pricePrHijoMenir1.precios]) && (empresa_prepaga === 'premedic' || empresa_prepaga === 'premedic')) {
-    const argsPremedic = [aporte_OS,buscar_mi_coeficiente('Premedic'),grupo[3],prices.priceAdultosPr.precios,prices.pricePrHijoMenir25.precios,prices.pricePrHijoMenir1.precios,edadIdPremedic,afinidad,bonAfinidad,group];
+  prices.pricePrHijoMenor25.precios,
+  prices.pricePrHijoMenor1.precios]) && (empresa_prepaga === 'premedic' || empresa_prepaga === 'todas')) {
+    const argsPremedic = [aporte_OS,buscar_mi_coeficiente('Premedic'),grupo[3],prices.priceAdultosPr.precios,prices.pricePrHijoMenor25.precios,prices.pricePrHijoMenor1.precios,edadIdPremedic,afinidad,bonAfinidad,group];
 // console.log('argsPremedic :',argsPremedic);
 valor_Premedic = functions.valor_Premedic(...argsPremedic);
 // console.log('valor_Premedic',valor_Premedic);
@@ -717,10 +717,10 @@ const resultado = combinedPlans.filter((plan: { precio: number; }) => {
        }
        return true;
        });
-  console.log(' FINALIZANDO COTIZACION ');
+  // console.log(' FINALIZANDO COTIZACION ');
 
 // console.log('concatenarPrecios   :');
-// console.log(concatenarPrecios);
+console.log(concatenarPrecios);
  res.status(200).json(concatenarPrecios);
       } catch(e) {
         handleHttp(res, 'ERROR_GET_ITEMS'); 
