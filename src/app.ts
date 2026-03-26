@@ -1,20 +1,15 @@
-
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { router } from "./routes"
+import { router } from "./routes";
 import dbConnect from "./config/mongo";
 import bodyParser from 'body-parser';
 import path from 'path';
 
+const app = express();
 const PORT = process.env.PORT || 3001;
 
-// const os = require('os');
-// const networkInterfaces = os.networkInterfaces();
-// const ipv6Address = networkInterfaces["vEthernet (Default Switch)"][0].address;
-// const appaddress = 'http://['+ipv6Address+']:'+PORT+'/';
-
-
+// 1. CONFIGURACIÓN DE CORS
 const whitelist = [
     'http://localhost:4200',
     'http://localhost:4300',
@@ -27,96 +22,82 @@ const whitelist = [
     'https://n8nwebhook.tuchat.com.ar',
     'https://type.tuchat.com.ar',
     'https://typeapi.tuchat.com.ar'
-  ];
-  const portRegex = /^http:\/\/localhost(?::\d+)?$/;
-  
-  const filteredWhitelist = whitelist.filter((origin) => portRegex.test(origin));
-  
- 
+];
 
-const app = express()
 app.use(cors({
-      origin: '*',
+    origin: function (origin, callback) {
+        // Permitir peticiones sin origen (como Postman o curl) o en la whitelist
+        if (!origin || whitelist.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    allowedHeaders: ['Authorization', 'Content-Type'],
+    credentials: true
+}));
 
-    // origin: filteredWhitelist,
-    allowedHeaders: ['Authorization', 'Content-Type']
+// 2. MIDDLEWARES DE PARSEO (DEBEN IR ANTES DE LAS RUTAS)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+// Nota: bodyParser ya está incluido en express moderno, pero lo mantenemos por tu compatibilidad
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-  }));
-  
-  app.use((req, res, next) => {
+// 3. SEGURIDAD CSP (CORREGIDA PARA NO BLOQUEAR TU FRONT)
+app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", 
         "default-src 'self'; " +
-        "img-src 'self' https://cotizador.tuchat.com.ar http://localhost:5200; " +
-        "script-src 'self'; " +
+        "img-src 'self' data: https://cotizador.tuchat.com.ar http://localhost:5200; " +
+        "script-src 'self' 'unsafe-inline'; " +
         "style-src 'self' 'unsafe-inline'; " +
-        "connect-src 'self'; " +
-        "font-src 'self';"  // Permitir fuentes del mismo origen
+        "connect-src 'self' https://servidorplus.saludok.com.ar https://*.vercel.app http://localhost:*; " + 
+        "font-src 'self';"
     );
     next();
 });
 
+// 4. ARCHIVOS ESTÁTICOS
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 5. RUTAS DE PRUEBA Y HOME
 app.get("/test", (req, res) => {
-  res.send("Esta es una prueba.");
+    res.send("Esta es una prueba funcionando.");
 });
 
-  app.use(express.static(path.join(__dirname, 'public')));
-  // Servir archivos estáticos desde la carpeta "public"
-  app.get("/",(req,res) => {
-    const htmlResponse =`
+app.get("/", (req, res) => {
+    const htmlResponse = `
     <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Web</title>
-    <style>
-        /* Estilos CSS van aquí */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            text-align: center;
-        }
-        /* Agrega más estilos según tus necesidades */
-    </style>
-</head>
-<body>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Servidor SaludOK</title>
+        <style>
+            body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
+            header { background: #333; color: white; padding: 20px; border-radius: 10px; }
+        </style>
+    </head>
+    <body>
+        <header><h1>Bienvenido al Servidor de SaludOK</h1></header>
+        <main><p>API funcionando correctamente.</p></main>
+    </body>
+    </html>`;
+    res.send(htmlResponse);
+});
 
-<header>
-    <h1>Bienvenido a mi página web</h1>
-</header>
-
-<main>
-    <p>Aquí puedes empezar a escribir el contenido de tu página web.</p>
-</main>
-
-<footer>
-    <p>© 2024 Mi Página Web</p>
-</footer>
-
-</body>
-</html>
-
-    `;
-    res.send(htmlResponse)
-  });
-app.use(express.json())
+// 6. CARGA DE RUTAS DEL SISTEMA (SIEMPRE DESPUÉS DE LOS MIDDLEWARES)
 app.use(router);
-app.use(bodyParser.json({ limit: '50mb' })); // Puedes ajustar el límite según tus necesidades
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-dbConnect().then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:` + PORT + `...`);
-      // console.log(`Web application public URL :  ` + appaddress);
-
-
+// 7. CONEXIÓN A DB Y ARRANQUE
+dbConnect()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running at http://localhost:${PORT}`);
+        });
+    })
+    .catch(error => {
+        console.error("❌ Error de conexión a la DB:", error);
+        process.exit(1); // Cerrar si no hay base de datos
     });
-  })
-  .catch(error => console.error(error));
-export default app
+
+export default app;
